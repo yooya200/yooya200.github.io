@@ -1,0 +1,15 @@
+<!doctype html>
+<html>
+<head>
+	<title>TTS 사용 불가 - 채팅 읽어주는 로봇</title>
+	<meta charset="utf-8">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-beta/css/bootstrap.min.css">
+</head>
+<body>
+	<div id="chat" style="overflow: hidden; word-wrap: break-word; height: 800px; width: 800px;">
+		<button type="button" class="btn btn-danger" disabled="disabled" id="btn-cancel" onclick="return false;">초기화 실패</button>
+		<button type="button" class="btn btn-warning" onclick="return false;" id="btn-logout" disabled="disabled">로그아웃</button><br />
+		<div id="last_read">TTS API를 지원하지 않거나, 사용 가능한 TTS 보이스가 없습니다.</div>
+	</div>
+</body>
+</html>
