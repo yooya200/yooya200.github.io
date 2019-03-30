@@ -4,7 +4,17 @@
 		{ "keyword": "내가졌어", "url": "https://sv.bagoum.com/voice/k/vo_01001_000_012.mp3" },
 		{ "keyword": "앗오딘님", "url": "https://sv.bagoum.com/voice/k/vo_104031020_7_102041020.mp3" },
 		{ "keyword": "밤피항복", "url": "https://sv.bagoum.com/voice/k/vo_106_000_012.mp3" },
-	        { "keyword": "반성했습니까", "url": "https://sv.bagoum.com/voice/k/vo_109721010_4_evo.mp3" }
-	]
+	        { "keyword": "반성했습니까", "url": "https://sv.bagoum.com/voice/k/vo_109721010_4_evo.mp3" },
+                { "keyword": "한수부탁하지", "url": "https://sv.bagoum.com/voice/k/vo_104_000_001.mp3" },
+	        { "keyword": "칭찬할만하군", "url": "https://sv.bagoum.com/voice/k/vo_104_000_004.mp3" },
+	        { "keyword": "목노쓸", "url": "https://sv.bagoum.com/voice/k/vo_104541020_1.mp3" },
+	        { "keyword": "벌레", "url": "https://sv.bagoum.com/voice/k/vo_101131020_1.mp3" },
+	        { "keyword": "세균지", "url": "https://sv.bagoum.com/voice/k/vo_109441010_1.mp3" },
+	        { "keyword": "세반사", "url": "https://sv.bagoum.com/voice/k/vo_800444010_1.mp3" },
+	        { "keyword": "비강세잠", "url": "https://sv.bagoum.com/voice/k/vo_111041010_1.mp3" },
+	        { "keyword": "짠~", "url": "https://sv.bagoum.com/voice/k/vo_103341010_1.mp3" },
+	        { "keyword": "다먹날타", "url": "https://sv.bagoum.com/voice/k/vo_105441020_1.mp3" },
+	        { "keyword": "해치워주세요", "url": "https://sv.bagoum.com/voice/k/vo_105011010_5.mp3" }
+    ]
 	
 }
