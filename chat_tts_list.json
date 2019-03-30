@@ -14,7 +14,13 @@
 	        { "keyword": "비강세잠", "url": "https://sv.bagoum.com/voice/k/vo_111041010_1.mp3" },
 	        { "keyword": "짠~", "url": "https://sv.bagoum.com/voice/k/vo_103341010_1.mp3" },
 	        { "keyword": "다먹날타", "url": "https://sv.bagoum.com/voice/k/vo_105441020_1.mp3" },
-	        { "keyword": "해치워주세요", "url": "https://sv.bagoum.com/voice/k/vo_105011010_5.mp3" }
+	        { "keyword": "해치워주세요", "url": "https://sv.bagoum.com/voice/k/vo_105011010_5.mp3" },
+	        { "keyword": "안녕?", "url": "https://sv.bagoum.com/voice/k/vo_05001_000_001.mp3" },
+	        { "keyword": "고마워~", "url": "https://sv.bagoum.com/voice/k/vo_05001_000_002.mp3" },
+	        { "keyword": "미안...", "url": "https://sv.bagoum.com/voice/k/vo_05001_000_003.mp3" },
+	        { "keyword": "우와대단해", "url": "https://sv.bagoum.com/voice/k/vo_05001_000_004.mp3" },
+	        { "keyword": "무서워...", "url": "https://sv.bagoum.com/voice/k/vo_05001_000_018.mp3" },
+	        { "keyword": "어!?", "url": "https://sv.bagoum.com/voice/k/vo_01001_000_005.mp3" },
     ]
 	
 }
