@@ -23,7 +23,9 @@
 	        { "keyword": "어!?", "url": "https://sv.bagoum.com/voice/k/vo_01001_000_005.mp3" },
 	        { "keyword": "딱딱해졌네", "url": "https://sv.bagoum.com/voice/k/vo_806_000_010.mp3" },
 	        { "keyword": "너정말싫어!", "url": "https://sv.bagoum.com/voice/k/vo_806_000_011.mp3" },
-	        { "keyword": "모마여담", "url": "https://sv.bagoum.com/voice/k/vo_900334040_1.mp3" }
+	        { "keyword": "모마여담", "url": "https://sv.bagoum.com/voice/k/vo_900334040_1.mp3" },
+	        { "keyword": "감사합니다", "url": "https://github.com/yooya200/yooya200.github.io/blob/84ae3e2ee724cec6072f84e905100e8c0fd8a63b/%EA%B0%90%EC%82%AC%ED%95%A9%EB%8B%88%EB%8B%A4.mp3" }
+	    
 	    
     ]
 	
