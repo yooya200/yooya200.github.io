@@ -3,8 +3,9 @@
 <head>
 	<title>채팅 읽어주는 로봇</title>
 	<meta charset="utf-8">
+	<link href="style.css" rel="stylesheet">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-beta/css/bootstrap.min.css">
-	<script src="https://gisellevonbingen.github.io/jquery.min.js"></script>
+	<script src="jquery.min.js"></script>
 	<script src="https://sdk.amazonaws.com/js/aws-sdk-2.283.1.min.js"></script>
 	<script src="https://cdn.rawgit.com/Lastorder-DC/tapic/5.0.2.2/dist/tapic.min.js"></script>
 	<script src="https://cdn.rawgit.com/blueimp/JavaScript-MD5/v2.10.0/js/md5.min.js"></script>
@@ -20,23 +21,15 @@
 		<button type="button" class="btn btn-success" onclick="window.change_channel();" id="btn-channel">채널 변경</button><br />
 		<div id="last_read">(없음)</div>
 	</div>
-	<form style="margin:10px">
-		<div class="form-group">
-			<label for="polly_access_id">아마존 액세스 아이디</label>
-			<input type="text" class="form-control" id="polly_access_id" placeholder="Amazon Access ID">
-		</div>
-		<div class="form-group">
-			<label for="polly_access_key">아마존 액세스 키</label>
-			<input type="text" class="form-control" id="polly_access_key" placeholder="Amazon Access Key">
-		</div>
-		<div class="form-group row">
-			<div class="offset-sm-2 col-sm-10">
-				<button type="button" class="btn btn-primary" onclick="localStorage.setItem('polly_access_id', document.getElementById('polly_access_id').value);localStorage.setItem('polly_access_key', document.getElementById('polly_access_key').value);location.reload()">
-					정보 저장
-				</button>
-			</div>
-		</div>
-	</form>
+	
+	<hr style='border-width: 2px;'>
+	
+	<form name="clipsForm">
+		스페셜 챗 음량조절
+	<div name='masterVolume' class='volume'><label style='margin-right: 10px'>마스터볼륨</label><label name='label' style='margin-right: 10px'>000%</label><input name='input' type='range' min='0' max='100' value='0' onchange='onMasterVolumeChange(this)'></div>
+						
+	</div>
+	
 	<script>
 		// 트위치 개발자 사이트에서 앱 등록으로 client id를 발급받으실수 있습니다.
 		window.oauth_client_id = "qp7etii0xqtqy5qs037zpb6ze5nvyu";
@@ -44,8 +37,8 @@
 		// 인증후 돌아올 페이지(현재 페이지 주소)를 입력합니다.
 		window.oauth_redirect_uri = "https://yooya200.github.io/chat_tts.html";
 		
-		// 엠퍼러 사운드 json 주소
-		window.sounds_list_uri = "https://raw.githubusercontent.com/yooya200/yooya200.github.io/master/chat_tts_list.json";
+		// 스페셜챗 json 주소
+		window.sounds_list_uri = "https://yooya200.github.io/chat_tts_list.json";
 		
 		// ==================================
 		// !! 이 아래로는 수정하지 마세요! !!
@@ -179,8 +172,6 @@
 
 		speechSynthesis.cancel();
 		
-		document.getElementById('polly_access_id').value = localStorage.getItem("polly_access_id");
-		document.getElementById('polly_access_key').value = localStorage.getItem("polly_access_key");
 		var awsCredentials = new AWS.Credentials(localStorage.getItem("polly_access_id"), localStorage.getItem("polly_access_key"));
 		var settings = {
 			awsCredentials: awsCredentials,
@@ -211,6 +202,8 @@
 
 		if (window.oauth != "") {
 		
+			getMasterVolume(clipsForm.children['masterVolume']);
+		
 			var listresponse = $.getJSON(window.sounds_list_uri);
 			rawArray = [];
 			clips = [];
@@ -230,8 +223,17 @@
 						var clip = new Set();
 						clip['keyword'] = raw.keyword;
 						clip['audio'] = new Audio(raw.url);
+						clip['volume'] = '1.0';
 						clip.type = "clip";
 						clips[index] = clip;
+						
+						var volumeDivTag = document.createElement('div');
+						volumeDivTag.clip = clip;
+						volumeDivTag.className = 'volume';
+						volumeDivTag.innerHTML = "<label name='nameLabel' style='margin-right: 10px'>" + raw.keyword +"</label>(<label name='volumeLabel'>000%</label>)<br><audio name='volumeAudio' controls='' preload='true' onvolumechange='onClipVolumeChange(this)'><source src='" + raw.url + "'></audio>";
+						
+						clipsForm.appendChild(volumeDivTag);
+						getClipVolume(volumeDivTag);
 					}
 					
 				}
@@ -749,6 +751,9 @@
 				window.kathy.Speak(obj.msg);
 			} else if(obj.type === "clip") {
 				console.debug("Clip - " + obj.keyword);
+				
+			
+				obj.audio.volume = window.specialChatMasterVolume * obj.volume;
 				obj.audio.play();
 				window.lastAudio = obj.audio;
 			} else {
@@ -756,6 +761,68 @@
 			}
 			
 			setTimeout(parseQueue,100);
+		}
+		
+		function onMasterVolumeChange(t)
+		{
+			var div = t.parentElement;
+			setMasterVolume(div);
+		}
+		
+		function onClipVolumeChange(t)
+		{
+			var div = t.parentElement;
+			setClipVolume(div);
+		}
+		
+		function updateMasterVolume(div, masterVolume)
+		{
+			div.children["input"].value = masterVolume;
+			div.children["label"].innerText = masterVolume + "%";
+			
+			window.specialChatMasterVolume = masterVolume / 100.0;
+		}
+		
+		function setMasterVolume(div)
+		{
+			var clip = div.clip;
+			var masterVolume = div.children["input"].value;
+			localStorage.setItem("clips.MasterVolume", masterVolume);
+		
+			updateMasterVolume(div, masterVolume);
+		}
+		
+		function getMasterVolume(div)
+		{
+			var masterVolume = localStorage.getItem("clips.MasterVolume");
+			
+			updateMasterVolume(div, masterVolume != undefined ? masterVolume : 100);
+		}
+		
+		function updateClipVolume(div, volume)
+		{
+			var clip = div.clip;
+			div.children["volumeAudio"].volume = volume;
+			div.children["volumeLabel"].innerText = (volume * 100).toFixed(1) + "%";
+			
+			clip['volume'] = volume;
+		}
+		
+		function setClipVolume(div)
+		{
+			var clip = div.clip;
+			var volume = div.children["volumeAudio"].volume;
+			localStorage.setItem("clips.volume." + clip.keyword, volume);
+		
+			updateClipVolume(div, volume);
+		}
+		
+		function getClipVolume(div)
+		{
+			var clip = div.clip;
+			var volume = localStorage.getItem("clips.volume." + clip.keyword);
+			
+			updateClipVolume(div, volume != undefined ? volume : 1);
 		}
 		
 	</script>
