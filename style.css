@@ -25,13 +25,12 @@ div {
 }
 
 div.volume {
-	display:inline-block;
+	display:block;
 	margin-left: 10px;
 	margin-top: 10px;
 	font-size: 11pt;
 	padding: 5px;
-	border-width: 1px;
 	border-color: #000000;
-	border: solid;
+	border: 2px solid;
 	width: fit-content;
 }
