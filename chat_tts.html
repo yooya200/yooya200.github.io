@@ -14,7 +14,7 @@
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/AlertifyJS/1.11.0/css/alertify.min.css" />
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/AlertifyJS/1.11.0/css/themes/bootstrap.min.css" />
 </head>
-<body>
+<body style='margin: 10px;'>
 	<div id="chat" style="overflow: hidden; word-wrap: break-word; width: 800px;">
 		<button type="button" class="btn btn-danger" disabled="disabled" id="btn-cancel" onclick="window.speechQueue = [];window.kathy.ShutUp();window.speechSynthesis.cancel();playText('큐를 비웠습니다',1.3,1,false,'SYSTEM')">초기화중</button>
 		<button type="button" class="btn btn-warning" onclick="localStorage.setItem('oauth','');location.reload();" id="btn-logout">로그아웃</button>
@@ -24,13 +24,8 @@
 	
 	<hr style='border-width: 2px;'>
 	스페셜 챗 음량 조절
-	<br>
 	<div name='masterVolume' class='volume'><label style='margin-right: 10px'>마스터볼륨</label><label name='label' style='margin-right: 10px'>000%</label><input name='input' type='range' min='0' max='100' value='0' onchange='onMasterVolumeChange(this)'></div>
-	<br>
 	<table name="clipsTable">
-	<br>
-	스페셜 챗 개별 음량 조절
-	<br>
 	</table>
 	
 	<script>
