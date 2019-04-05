@@ -11,15 +11,25 @@ body {
 	text-rendering: optimizeLegibility;
 }
 
+td {
+	padding: 0px;
+	margin: 0px;
+}
+
+tr {
+	padding: 0px;
+	margin: 0px;
+}
+
 div {
 }
 
 div.volume {
+	display:inline-block;
 	margin-left: 10px;
-	display: block;
+	margin-top: 10px;
 	font-size: 11pt;
 	padding: 5px;
-	margin-top: 10px;
 	border-width: 1px;
 	border-color: #000000;
 	border: solid;

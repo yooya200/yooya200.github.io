@@ -23,22 +23,28 @@
 	</div>
 	
 	<hr style='border-width: 2px;'>
-	
-	<form name="clipsForm">
-		스페셜 챗 음량조절
+	스페셜 챗 음량 조절
+	<br>
 	<div name='masterVolume' class='volume'><label style='margin-right: 10px'>마스터볼륨</label><label name='label' style='margin-right: 10px'>000%</label><input name='input' type='range' min='0' max='100' value='0' onchange='onMasterVolumeChange(this)'></div>
-						
-	</div>
+	<br>
+	<table name="clipsTable">
+	<br>
+	스페셜 챗 개별 음량 조절
+	<br>
+	</table>
 	
 	<script>
+	
 		// 트위치 개발자 사이트에서 앱 등록으로 client id를 발급받으실수 있습니다.
 		window.oauth_client_id = "qp7etii0xqtqy5qs037zpb6ze5nvyu";
+		var urihost = "https://yooya200.github.io/";
+		
+		var tableCols = 3;
 
 		// 인증후 돌아올 페이지(현재 페이지 주소)를 입력합니다.
-		window.oauth_redirect_uri = "https://yooya200.github.io/chat_tts.html";
-		
+		window.oauth_redirect_uri = urihost + "chat_tts.html";
 		// 스페셜챗 json 주소
-		window.sounds_list_uri = "https://yooya200.github.io/chat_tts_list.json";
+		window.sounds_list_uri = urihost + "chat_tts_list.json";
 		
 		// ==================================
 		// !! 이 아래로는 수정하지 마세요! !!
@@ -202,11 +208,14 @@
 
 		if (window.oauth != "") {
 		
-			getMasterVolume(clipsForm.children['masterVolume']);
+			var clipsTable = document.body.children['clipsTable'];
+			getMasterVolume(document.body.children['masterVolume']);
 		
 			var listresponse = $.getJSON(window.sounds_list_uri);
 			rawArray = [];
 			clips = [];
+			
+			var tableIndex = 0;
 			
 			listresponse.complete(function()
 			{
@@ -229,10 +238,10 @@
 						
 						var volumeDivTag = document.createElement('div');
 						volumeDivTag.clip = clip;
-						volumeDivTag.className = 'volume';
 						volumeDivTag.innerHTML = "<label name='nameLabel' style='margin-right: 10px'>" + raw.keyword +"</label>(<label name='volumeLabel'>000%</label>)<br><audio name='volumeAudio' controls='' preload='true' onvolumechange='onClipVolumeChange(this)'><source src='" + raw.url + "'></audio>";
+						volumeDivTag.className = 'volume';
 						
-						clipsForm.appendChild(volumeDivTag);
+						tableIndex = addToTable(clipsTable, volumeDivTag, tableIndex, tableCols);
 						getClipVolume(volumeDivTag);
 					}
 					
@@ -817,6 +826,28 @@
 			var volume = localStorage.getItem("clips.volume." + clip.keyword);
 			
 			updateClipVolume(div, volume != undefined ? volume : 1);
+		}
+		
+		function addToTable(table, div, tableIndex, tableCols)
+		{
+			var trTag;
+			
+			if ((tableIndex % tableCols) == 0)
+			{
+				trTag = document.createElement('tr');
+				table.appendChild(trTag);
+			}
+			else
+			{
+				var childNodes = clipsTable.childNodes;
+				trTag = childNodes[childNodes.length - 1];
+			}
+			
+			var tdTag = document.createElement('td');
+			tdTag.appendChild(div);
+			trTag.appendChild(tdTag);
+			
+			return tableIndex + 1;
 		}
 		
 	</script>
