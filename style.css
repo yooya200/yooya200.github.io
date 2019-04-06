@@ -1,12 +1,9 @@
 html {
-	box-sizing: border-box;
 }
 body {
 	font-size: 11pt;
 	box-sizing: inherit;
 	background-color: #E5E5E5;
-	width: 620px;
-	min-height: 600px;
 	font-family: "맑은 고딕";
 	text-rendering: optimizeLegibility;
 }
@@ -26,6 +23,12 @@ tr {
 }
 
 div {
+}
+
+div.volumecontainer {
+	display: flex;
+	flex-direction: row;
+	flex-wrap : wrap;
 }
 
 div.volume {
