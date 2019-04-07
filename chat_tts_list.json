@@ -28,13 +28,17 @@
 		{ "keyword": "다음차원으로", "url": "https://sv.bagoum.com/voice/k/vo_101334020_1.mp3" },
 	        { "keyword": "반디", "url": "https://sv.bagoum.com/voice/k/vo_900111020_1.mp3" },
 	        { "keyword": "여긴어딘가요?", "url": "https://sv.bagoum.com/voice/k/vo_104321020_1.mp3" },
+	        { "keyword": "안뇽~", "url": "https://sv.bagoum.com/voice/k/vo_107111030_4.mp3" },
+	        { "keyword": "근성이없어", "url": "https://sv.bagoum.com/voice/k/vo_104411030_3.mp3" },
+	        { "keyword": "딸랑딸랑", "url": "https://sv.bagoum.com/voice/k/vo_101021010_1.mp3" },
 	        { "keyword": "감사합니다", "url": "https://yooya200.github.io/감사합니다.mp3" },
 		{ "keyword": "다시는안하겠소", "url": "https://yooya200.github.io/다시는안하겟소.mp3" },
 		{ "keyword": "빛당태", "url": "https://yooya200.github.io/빛당태.mp3" },
 		{ "keyword": "안녕하살법!", "url": "https://yooya200.github.io/안녕하살법!.mp3" },
 		{ "keyword": "안녕하살법받아치기!", "url": "https://yooya200.github.io/안녕하살법받아치기!.mp3" },
 		{ "keyword": "할거야안할거야", "url": "https://yooya200.github.io/할거야안할거야.mp3" },
-		{ "keyword": "안녕히계세요여러분", "url": "https://yooya200.github.io/안녕히계세요여러분.mp3" }
+		{ "keyword": "안녕히계세요여러분", "url": "https://yooya200.github.io/안녕히계세요여러분.mp3" },
+	        { "keyword": "푸딩푸딩", "url": "https://redive.estertion.win/sound/unit_battle_voice/100701/vo_btl_100701_cutin_001.m4a" }
     ]
 	
 }
