@@ -51,8 +51,8 @@
 	        { "keyword": "또죽었네", "url": "https://yooya200.github.io/또죽었네.mp3" },    
 	        { "keyword": "재미없는게임이야", "url": "https://yooya200.github.io/재미없는게임이야.mp3" },
 	        { "keyword": "재밌다", "url": "https://yooya200.github.io/재밌다.mp3" },
-	        { "keyword": "푸딩푸딩", "url": "https://redive.estertion.win/sound/unit_battle_voice/100701/vo_btl_100701_cutin_001.m4a" }
-                { "keyword": "호메떼호메떼", "url": "https://yooya200.github.io/호메떼호메떼.wav" },
+	        { "keyword": "푸딩푸딩", "url": "https://redive.estertion.win/sound/unit_battle_voice/100701/vo_btl_100701_cutin_001.m4a" },
+                { "keyword": "호메떼호메떼", "url": "https://yooya200.github.io/호메떼호메떼.wav" }
     ]
 	
 }
