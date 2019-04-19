@@ -6,9 +6,11 @@
 	<link href="style.css" rel="stylesheet">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-beta/css/bootstrap.min.css">
 	<script src="jquery.min.js"></script>
+	<script src="jsDynamicLoader.js"></script>
 	<script src="https://sdk.amazonaws.com/js/aws-sdk-2.283.1.min.js"></script>
-	<script src="https://cdn.rawgit.com/Lastorder-DC/tapic/5.0.2.2/dist/tapic.min.js"></script>
-	<script src="https://cdn.rawgit.com/blueimp/JavaScript-MD5/v2.10.0/js/md5.min.js"></script>
+	<script src="tapic.min.js"></script>
+	<script src="md5.min.js"></script>
+	<script src="specialchat.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/AlertifyJS/1.11.0/alertify.min.js"></script>
 	<script src="https://lastorder.xyz/ChattyKathy/ChattyKathy.js"></script>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/AlertifyJS/1.11.0/css/alertify.min.css" />
@@ -16,7 +18,7 @@
 </head>
 <body style='margin: 10px;'>
 	<div id="chat" style="overflow: hidden; word-wrap: break-word; width: 800px;">
-		<button type="button" class="btn btn-danger" disabled="disabled" id="btn-cancel" onclick="window.speechQueue = [];window.kathy.ShutUp();window.speechSynthesis.cancel();playText('큐를 비웠습니다',1.3,1,false,'SYSTEM')">초기화중</button>
+		<button type="button" class="btn btn-danger" disabled="disabled" id="btn-cancel" onclick="window.speechQueue = [];window.kathy.ShutUp();window.speechSynthesis.cancel();enqueueText('큐를 비웠습니다',1.3,1,false,'SYSTEM')">초기화중</button>
 		<button type="button" class="btn btn-warning" onclick="localStorage.setItem('oauth','');location.reload();" id="btn-logout">로그아웃</button>
 		<button type="button" class="btn btn-success" onclick="window.change_channel();" id="btn-channel">채널 변경</button><br />
 		<div id="last_read">(없음)</div>
@@ -182,7 +184,7 @@
 		window.kathy = ChattyKathy(settings);
 		window.users = [];
 		window.speechQueue = [];
-		window.lastAudio = null;
+		window.specialchatplayer = new SpecialChatPlayer();
 		
 		window.change_channel = function() {
 			alertify.prompt('채널 아이디 입력', '연결할 채널 아이디를 입력해주세요. 한글 닉네임 대신 twitch.tv/ 주소 뒤에 붙는 영문 아이디를 입력해주셔야 합니다.', '', function(evt, value) {
@@ -201,41 +203,21 @@
 
 		if (window.oauth != "") {
 		
-			var clipsTable = document.body.children['clipsTable'];
 			getMasterVolume(document.body.children['masterVolume']);
 		
 			var listresponse = $.getJSON(window.sounds_list_uri);
-			rawArray = [];
-			clips = [];
 			
 			listresponse.complete(function()
 			{
 				if  (listresponse.status == 200)
 				{
-					rawArray = listresponse.responseJSON["sounds"];
-					clips = [];
+					var responseJSON = listresponse.responseJSON;
 					
-					for (var i = 0; i < rawArray.length; i ++)
-					{
-						var raw = rawArray[i];
-						var index = clips.length;
-						
-						var clip = new Set();
-						clip['keyword'] = raw.keyword;
-						clip['audio'] = new Audio(raw.url);
-						clip['volume'] = '1.0';
-						clip.type = "clip";
-						clips[index] = clip;
-						
-						var volumeDivTag = document.createElement('div');
-						volumeDivTag.clip = clip;
-						volumeDivTag.innerHTML = "<label name='nameLabel' style='margin-right: 10px'>" + raw.keyword +"</label>(<label name='volumeLabel'>000%</label>)<br><audio name='volumeAudio' controls='' preload='true' onvolumechange='onClipVolumeChange(this)'><source src='" + raw.url + "'></audio>";
-						volumeDivTag.className = 'volume';
-						
-						clipsTable.appendChild(volumeDivTag);
-						getClipVolume(volumeDivTag);
-					}
+					var soundsJson = responseJSON["sounds"];
+					parseSounds(soundsJson);
 					
+					var voicewaresJson = responseJSON["voicewares"];
+					parseVoicewares(voicewaresJson);
 				}
 				
 			});
@@ -494,14 +476,14 @@
 						if (message != "") {
 							// 모더레이터/스트리머는 설정 무관 최대 120글자 읽기 가능
 							if (((e.mod && index < 0) || e.streamer || e.badges.indexOf("broadcaster/1") != -1) && message.length < 120) {
-								playText(message, personality_speed, personality_pitch, false, e.from, voicename);
+								enqueueText(message, personality_speed, personality_pitch, false, e.from, voicename);
 							} else {
 								// 밴리스트에 없는 아이디면서 채팅 길이가 지정된 길이 미만
 								if (index === -1 && message.length < window.maxlength) {
 									if(window.tts_subonly) {
-										if(e.sub) playText(message, personality_speed, personality_pitch, false, e.from, voicename);
+										if(e.sub) enqueueText(message, personality_speed, personality_pitch, false, e.from, voicename);
 									} else {
-										playText(message, personality_speed, personality_pitch, false, e.from, voicename);
+										enqueueText(message, personality_speed, personality_pitch, false, e.from, voicename);
 									}
 								}
 							}
@@ -510,20 +492,21 @@
 				}
 			});
 			
-			function splitForPlay1(string)
+			function parseText1(string)
 			{
 				var result = [];
 				result[0] = string;
+				var clips = window.specialchatplayer.clips;
 				
 				for (var i = 0; i < clips.length; i ++)
 				{
-					result = splitForPlay2(result, clips[i]);
+					result = parseText2(result, clips[i]);
 				}
 				
 				return result;
 			}
 			
-			function splitForPlay2(list, pair)
+			function parseText2(list, pair)
 			{
 				var result = [];
 				var keyword = pair.keyword;
@@ -567,34 +550,70 @@
 				return result;
 			}
 			
-			function playText(string, speed, pitch, ignoreKor, nickname, voicename) {
-			
-				var splited = splitForPlay1(string);
+			function parseVoiceware(string) {
+				var voicewares = window.voicewares;
 				
-				for (var i = 0; i < splited.length; i++)
-				{
-					var item = splited[i];
+				for (var i = 0; i < voicewares.length; i++) {
+					var voiceware = voicewares[i];
+					var prefix = voiceware.prefix;
 					
-					if (typeof(item) == "string")
-					{
-						playTextReal(item, speed, pitch, ignoreKor, nickname, voicename);
-					}
-					else
-					{
-						playAudio(item);
+					if (string.startsWith(prefix)) {
+						var tuple = {};
+						tuple.voiceware = voiceware;
+						tuple.msg = string.substring(prefix.length);
+						tuple.type = "voiceware";
+						return tuple;
 					}
 					
 				}
 				
+				return null;
+			}
+			
+			function enqueueText(string, speed, pitch, ignoreKor, nickname, voicename) {
+			
+				document.getElementById("last_read").innerHTML = "<b>" + nickname + "</b>:" + string;
+				
+				var voicewareTuple = parseVoiceware(string);
+				
+				if (voicewareTuple != null)
+				{
+					enqueueVoiceware(voicewareTuple);
+				}
+				else
+				{
+					var splited = parseText1(string);
+					
+					for (var i = 0; i < splited.length; i++)
+					{
+						var item = splited[i];
+						
+						if (typeof(item) == "string")
+						{
+							enqueueTextReal(item, speed, pitch, ignoreKor, nickname, voicename);
+						}
+						else
+						{
+							enqueueSpecialChatClip(item);
+						}
+						
+					}
+				
+				}
 				
 			}
 			
-			function playAudio(clip) {
+			function enqueueVoiceware(tuple) {
+					window.speechQueue.push(tuple);
+					parseQueue();
+			}
+
+			function enqueueSpecialChatClip(clip) {
 					window.speechQueue.push(clip);
 					parseQueue();
 			}
 
-			function playTextReal(string, speed, pitch, ignoreKor, nickname, voicename) {
+			function enqueueTextReal(string, speed, pitch, ignoreKor, nickname, voicename) {
 				string = string.trim();
 				if(string === "") {
 					parseQueue();
@@ -642,14 +661,6 @@
 							else if (google_jpn !== -1) msg.voice = speechSynthesis.getVoices()[google_jpn];
 							msg.rate = speed;
 							msg.pitch = pitch;
-							msg.onstart = function(event) {
-								if (typeof event.utterance.from == "undefined" || event.utterance.from == "") event.utterance.from = "Unknown";
-								document.getElementById("last_read").innerHTML = "<b>" + event.utterance.from + "</b>:" + event.utterance.text;
-							}
-							msg.onend = function(event) {
-								if (window.debugmode) console.log("msg read event");
-								if (window.debugmode) console.log(event);
-							}
 							//window.speechSynthesis.speak(msg);
 							var obj = {};
 							obj.type = "default"
@@ -718,43 +729,124 @@
 			}
 		}
 		
+		function isBusy()
+		{
+			if(window.speechSynthesis.speaking || window.kathy.IsSpeaking())
+			{
+				return true;
+			}
+			else if (window.specialchatplayer.isBusy())
+			{
+				return true;
+			}
+			else
+			{
+				var voicewares = window.voicewares;
+				
+				for (var i = 0; i < voicewares.length; i++)
+				{
+					if (voicewares[i].isBusy())
+					{
+						return true;
+					}
+					
+				}
+				
+			}
+			
+			return false;
+		}
+		
 		function parseQueue() {
 			var queue = window.speechQueue;
 			
-			if(window.speechSynthesis.speaking || window.kathy.IsSpeaking()) {
-				setTimeout(parseQueue,100);
-				return;
-			}
-			else if (window.lastAudio != null && window.lastAudio.paused == false)
+			if (isBusy())
 			{
 				setTimeout(parseQueue,100);
 				return;
 			}
 			
 			var obj = queue.shift();
+			
 			if(typeof obj === 'undefined') {
 				setTimeout(parseQueue,100);
 				return;
 			}
 			
-			if(obj.type === "default") {
+			if(obj.type === "default")
+			{
 				console.debug("Default TTS - " + obj.msg.text);
 				window.speechSynthesis.speak(obj.msg);
-			} else if(obj.type === "polly") {
+			}
+			else if(obj.type === "polly")
+			{
 				console.debug("Amazon Polly - " + obj.msg);
 				window.kathy.Speak(obj.msg);
-			} else if(obj.type === "clip") {
-				console.debug("Clip - " + obj.keyword);
-				
-			
-				obj.audio.volume = window.specialChatMasterVolume * obj.volume;
-				obj.audio.play();
-				window.lastAudio = obj.audio;
-			} else {
+			}
+			else if(obj.type === "specialchatclip")
+			{
+				console.debug("SpecialChatClip - " + obj.keyword);
+				window.specialchatplayer.play(obj);
+			}
+			else if(obj.type === "voiceware")
+			{
+				var voiceware = obj.voiceware;
+				console.debug("Voiceware - " + voiceware.name + " : " + obj.msg);
+				voiceware.play(obj.msg);
+			}
+			else
+			{
 				console.warn("ERROR - Type " + obj.type + " is not supported.");
 			}
 			
 			setTimeout(parseQueue,100);
+		}
+		
+		function parseVoicewares(voicewaresJson)
+		{
+			var voicewares = [];
+			
+			for (var i = 0; i < voicewaresJson.length; i ++)
+			{
+				var pair = voicewaresJson[i];
+				loadJavascript(pair.script, function()
+				{
+					var obj = new window[pair.constructor](pair);
+					voicewares[voicewares.length] = obj;
+				});
+				
+			}
+			
+			window.voicewares = voicewares;
+		}
+		
+		function parseSounds(soundsJson)
+		{
+			var clips = [];
+			var clipsTable = document.body.children['clipsTable'];
+			
+			for (var i = 0; i < soundsJson.length; i ++)
+			{
+				var index = clips.length;
+				var soundJson = soundsJson[i];
+				
+				var clip = new SpecialChatClip();
+				clip.keyword = soundJson.keyword;
+				clip.audio = new Audio(soundJson.url);
+				clip.volume = '1.0';
+				clip.type = "specialchatclip";
+				clips[index] = clip;
+
+				var volumeDivTag = document.createElement('div');
+				volumeDivTag.clip = clip;
+				volumeDivTag.innerHTML = "<label name='nameLabel' style='margin-right: 10px'>" + soundJson.keyword +"</label>(<label name='volumeLabel'>000%</label>)<br><audio name='volumeAudio' controls='' preload='true' onvolumechange='onClipVolumeChange(this)'><source src='" + soundJson.url + "'></audio>";
+				volumeDivTag.className = 'volume';
+				
+				clipsTable.appendChild(volumeDivTag);
+				getClipVolume(volumeDivTag);
+			}
+					
+			window.specialchatplayer.clips = clips;
 		}
 		
 		function onMasterVolumeChange(t)
@@ -774,7 +866,7 @@
 			div.children["input"].value = masterVolume;
 			div.children["label"].innerText = masterVolume + "%";
 			
-			window.specialChatMasterVolume = masterVolume / 100.0;
+			window.specialchatplayer.masterVolume = masterVolume / 100.0;
 		}
 		
 		function setMasterVolume(div)
