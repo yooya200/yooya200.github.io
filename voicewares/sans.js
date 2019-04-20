@@ -9,8 +9,13 @@ function VoicewareSans(json)
 	
 	this.isBusy = function()
 	{
-		var queue = this.sayQueue;
-		return queue.length > 0 || this.audio.paused == false;
+		return this.sayQueue.length > 0 || this.audio.paused == false;
+	}
+	
+	this.clear = function()
+	{
+		this.sayQueue = [];
+		this.audio.pause();
 	}
 	
 	this.play = function(string)

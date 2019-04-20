@@ -6,15 +6,28 @@ function SpecialChatPlayer()
 	
 	this.isBusy = function()
 	{
-		return this.lastClip != null && this.lastClip.audio.paused == false;
+		var lastClip = this.lastClip;
+		return lastClip != null && lastClip.audio.paused == false;
 	}
 	
 	this.play = function(clip)
 	{
+		clip.audio.currentTime = 0;
 		clip.audio.volume = this.masterVolume * clip.volume;
 		clip.audio.play();
 		
 		this.lastClip = clip;
+	}
+	
+	this.clear = function()
+	{
+		var lastClip = this.lastClip;
+		
+		if (lastClip != null)
+		{
+			lastClip.audio.pause();
+		}
+		
 	}
 	
 }
