@@ -1,7 +1,7 @@
 {
 	"voicewares": [
-		{ "prefix": "샌즈:", "skipThreshold": 0.4, "audio": "http://124.58.147.98:8080/chat_tts/voicewares/sans.mp3"
-			, "script": "http://124.58.147.98:8080/chat_tts/voicewares/sans.js"
+		{ "prefix": "샌즈:", "skipThreshold": 0.4, "audio": "chat_tts/voicewares/sans.mp3"
+			, "script": "chat_tts/voicewares/sans.js"
 			, "constructor": "VoicewareSans"
 		}
 	],	
