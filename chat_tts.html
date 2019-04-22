@@ -29,7 +29,7 @@
 	<div>테스트<input onkeypress="onTestTextBoxkeydown(event)" id="testTextBox" type="textbox" style="margin-left: 5px"></div>
 	
 	<hr style='border-width: 2px;'>
-	보이스웨어 목록
+	스페셜 보이스 목록
 	<div id='voicewaresTable'></div><br>
 	스페셜 챗 음량 조절
 	<div id='masterVolume' class='volume'><label style='margin-right: 10px'>마스터볼륨</label><label name='label' style='margin-right: 10px'>000%</label><input name='input' type='range' min='0' max='100' value='0' onchange='onMasterVolumeChange(this)'></div>
@@ -77,8 +77,10 @@
 	function setup()
 	{
 		// 트위치 개발자 사이트에서 앱 등록으로 client id를 발급받으실수 있습니다.
-		window.oauth_client_id = "qp7etii0xqtqy5qs037zpb6ze5nvyu";
-		var urihost = "https://yooya200.github.io/";
+		// window.oauth_client_id = "qp7etii0xqtqy5qs037zpb6ze5nvyu";
+		window.oauth_client_id = "v3dxpa6mbjxmg0klu0ytdlaydeflax";
+		// var urihost = "https://yooya200.github.io/";
+		var urihost = "http://124.58.147.98:8080/";
 		
 		// 인증후 돌아올 페이지(현재 페이지 주소)를 입력합니다.
 		window.oauth_redirect_uri = urihost + "chat_tts.html";
@@ -448,7 +450,7 @@
 	function enqueueText(string, speed, pitch, nickname)
 	{
 		$('#last_read')[0].innerHTML = "<b>" + nickname + "</b>:" + string;
-		
+	
 		var voicewareTuple = parseVoiceware(string);
 		
 		if (voicewareTuple != null)
@@ -457,6 +459,7 @@
 		}
 		else
 		{
+			var ttsTuple = findStringLanguage(string);
 			var splited = parseText1(string);
 			
 			for (var i = 0; i < splited.length; i++)
@@ -465,7 +468,7 @@
 				
 				if (typeof(item) == "string")
 				{
-					enqueueTTS(item, speed, pitch, nickname);
+					enqueueTTS(item, speed, pitch, ttsTuple);
 				}
 				else
 				{
@@ -489,8 +492,69 @@
 		window.speechQueue.push(clip);
 		parseQueue();
 	}
+	
+	function findStringLanguage(string)
+	{
+		var ttsHandler = window.ttsHandler;
+		var speechSynthesis = ttsHandler.speechSynthesis;
+		
+		var i = 0;
+		var google_kor = -1;
+		var google_jpn = -1;
+		var check = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/;
+		var check_jp = /[\u3040-\u30ff\u31f0-\u31ff]/;
+		
+		var selectedVoice = null;
+		
+		speechSynthesis.getVoices().forEach(function(voice)
+		{
+			if (check.test(string))
+			{
+				if (voice.lang == "ko-KR" && voice.name.indexOf("Google") !== -1)
+				{
+					selectedVoice = voice;
+				}
+				
+			}
+			else if (check_jp.test(string))
+			{
+				if (voice.lang == "ja-JP" && voice.name.indexOf("Google") !== -1)
+				{
+					selectedVoice = voice;
+				}
+				
+			}
+			else
+			{
+				if (voice.lang == "en-US" && voice.name.indexOf("Google") !== -1)
+				{
+					selectedVoice = voice;
+				}
+				
+			}
 
-	function enqueueTTS(string, speed, pitch, nickname)
+			i++;
+		});
+		
+		var lang = null;
+
+		if (check.test(string))
+		{
+			lang = "ko-KR";
+		}
+		else if (check_jp.test(string))
+		{
+			lang = "ja-JP";
+		}	
+		else
+		{
+			lang = "en-US";
+		}
+		
+		return { voice: selectedVoice, lang: lang };
+	}
+
+	function enqueueTTS(string, speed, pitch, ttsTuple)
 	{
 		string = string.trim();
 		
@@ -503,52 +567,12 @@
 		var ttsHandler = window.ttsHandler;
 		var speechSynthesis = ttsHandler.speechSynthesis;
 		
-		var i = 0;
-		var google_kor = -1;
-		var google_jpn = -1;
-		var check = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/;
-		var check_jp = /[\u3040-\u30ff\u31f0-\u31ff]/;
-		
-		speechSynthesis.getVoices().forEach(function(voice)
-		{
-			if (check.test(string))
-			{
-				if (voice.lang == "ko-KR" && voice.name.indexOf("Google") !== -1)
-				{
-					google_kor = i;
-				}
-				
-			}
-			else if (check_jp.test(string))
-			{
-				if (voice.lang == "ja-JP" && voice.name.indexOf("Google") !== -1)
-				{
-					google_jpn = i;
-				}
-				
-			}
-			else
-			{
-				if (voice.lang == "en-US" && voice.name.indexOf("Google") !== -1)
-				{
-					google_kor = i;
-				}
-				
-			}
-
-			i++;
-		});
-
 		var msg = new SpeechSynthesisUtterance(string);
-
-		if (check.test(string)) msg.lang = "ko-KR";
-		else if (check_jp.test(string)) msg.lang = "ja-JP";
-		else msg.lang = "en-US";
-		msg.from = nickname;
-		if (google_kor !== -1) msg.voice = speechSynthesis.getVoices()[google_kor];
-		else if (google_jpn !== -1) msg.voice = speechSynthesis.getVoices()[google_jpn];
 		msg.rate = speed;
 		msg.pitch = pitch;
+		msg.lang = ttsTuple.lang;
+		msg.voice = ttsTuple.voice;
+		
 		//window.speechSynthesis.speak(msg);
 		var obj = {};
 		obj.type = "default"
