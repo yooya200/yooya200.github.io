@@ -60,6 +60,11 @@ function VoicewareSonic()
 		var queue = this.sayQueue;
 		var voice = queue.shift();
 		
+		if(typeof voice === 'undefined')
+		{
+			return;
+		}
+		
 		var set = null;
 		
 		if (voice == 'syllable')

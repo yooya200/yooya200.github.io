@@ -46,6 +46,11 @@ function VoicewareSans()
 		var queue = this.sayQueue;
 		var word = queue.shift();
 		
+		if(typeof word === 'undefined')
+		{
+			return;
+		}
+		
 		this.audio.pause();
 		this.audio.playbackRate = word.speed;
 		this.audio.volume = word.volume;
