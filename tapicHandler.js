@@ -1,6 +1,6 @@
 function TapicHandler()
 {
-	this.setup = function(oauth, channelName, onRequireChannelName)
+	this.setup = function(oauth, channelName)
 	{
 		var onJoin = this.onJoin;
 		var onMessage = this.onMessage;
@@ -11,34 +11,27 @@ function TapicHandler()
 			
 			if (channelName == "")
 			{
-				if (onRequireChannelName != null)
+				channelName = username;
+			}
+
+			TAPIC.joinChannel(channelName, function()
+			{
+				if (onJoin != null)
 				{
-					onRequireChannelName(username);
+					onJoin(channelName);
 				}
 				
-			}
-			else
-			{
-				TAPIC.joinChannel(channelName, function()
+				TAPIC.listen('message', function(e)
 				{
-					if (onJoin != null)
+					if (onMessage != null)
 					{
-						onJoin();
+						onMessage(e);
 					}
 					
-					TAPIC.listen('message', function(e)
-					{
-						if (onMessage != null)
-						{
-							onMessage(e);
-						}
-						
-					});
-
 				});
+
+			});
 		
-			}
-				
 		});
 
 	};

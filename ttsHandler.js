@@ -60,7 +60,7 @@ function TTSHandler()
 
 		msg.onend = function(event)
 		{
-			var voices = speechSynthesis.getVoices();
+			var voices = target.speechSynthesis.getVoices();
 
 			if (voices.length == 0)
 			{
