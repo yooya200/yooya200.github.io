@@ -3,6 +3,8 @@
 <head>
 	<title>채팅 읽어주는 로봇</title>
 	<meta charset="utf-8">
+	<link rel="favicon" href="./favicon.ico">
+	<link rel="shortcut icon" href="./favicon.ico">
 	<link href="style.css" rel="stylesheet">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-beta/css/bootstrap.min.css">
 	<script src="https://sdk.amazonaws.com/js/aws-sdk-2.283.1.min.js"></script>
@@ -74,16 +76,23 @@
 		
 	}
 	
+	function getParent(path)
+	{
+		var array = path.split('/');
+		array.pop();
+		
+		return array.join('/');
+	}
+	
 	function setup()
 	{
 		// 트위치 개발자 사이트에서 앱 등록으로 client id를 발급받으실수 있습니다.
 		window.oauth_client_id = "qp7etii0xqtqy5qs037zpb6ze5nvyu";
-		var urihost = "https://yooya200.github.io/";
 		
-		// 인증후 돌아올 페이지(현재 페이지 주소)를 입력합니다.
-		window.oauth_redirect_uri = urihost + "chat_tts.html";
+		var urihost = new URL(window.location.href);
+		window.oauth_redirect_uri = urihost.origin + urihost.pathname;
 		// 스페셜챗 json 주소
-		window.sounds_list_uri = urihost + "chat_tts_list.json";
+		window.sounds_list_uri = urihost.origin + getParent(urihost.pathname) + "/chat_tts_list.json";
 		
 		// ==================================
 		// !! 이 아래로는 수정하지 마세요! !!
@@ -761,10 +770,11 @@
 		
 		for (var i = 0; i < voicewaresJson.length; i ++)
 		{
-			var pair = voicewaresJson[i];
-			loadJavascript(pair.script, function()
+			var _pair = voicewaresJson[i];
+			loadJavascript(_pair.script, function(pair, script)
 			{
-				var obj = new window[pair.constructor](pair);
+				var obj = new window[pair.constructor]();
+				obj.setup(pair);
 				voicewares[voicewares.length] = obj;
 				
 				var tag = document.createElement('div');
@@ -773,7 +783,7 @@
 				tag.className = 'volume';
 				
 				voicewaresTable.appendChild(tag);
-			});
+			}, _pair);
 			
 		}
 		

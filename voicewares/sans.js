@@ -1,22 +1,25 @@
 
-function VoicewareSans(json)
+function VoicewareSans()
 {
-	this.name = "Sans";
-	this.prefix = json.prefix;
-	this.skipThreshold = json.skipThreshold;
-	this.audio = new Audio(json.audio);
-	this.sayQueue = [];
+	this.setup = function(json)
+	{
+		this.name = "Sans";
+		this.prefix = json.prefix;
+		this.skipThreshold = json.skipThreshold;
+		this.audio = new Audio(json.audio);
+		this.sayQueue = [];
+	};
 	
 	this.isBusy = function()
 	{
 		return this.sayQueue.length > 0 || this.audio.paused == false;
-	}
+	};
 	
 	this.clear = function()
 	{
 		this.sayQueue = [];
 		this.audio.pause();
-	}
+	};
 	
 	this.play = function(string)
 	{
@@ -30,22 +33,18 @@ function VoicewareSans(json)
 		}
 		
 		this.say();
-	}
+	};
 
 	this.say = function()
 	{
 		if (this.audio.paused == false && this.canSkip() == false)
 		{
-			setTimeout(function(p) { p.say(); }, 10, this);
+			setTimeout(function(p) { p.say(); }, 100, this);
 			return;
 		}
 		
 		var queue = this.sayQueue;
 		var word = queue.shift();
-		
-		if(typeof word === 'undefined') {
-			return;
-		}
 		
 		this.audio.pause();
 		this.audio.playbackRate = word.speed;
@@ -53,14 +52,14 @@ function VoicewareSans(json)
 		this.audio.currentTime = 0;
 		this.audio.play();
 		
-		setTimeout(function(p) { p.say(); }, 10, this);
-	}
+		setTimeout(function(p) { p.say(); }, 100, this);
+	};
 	
 	this.canSkip = function()
 	{
 		var ratio = this.audio.currentTime / this.audio.duration;
 		return ratio >= this.skipThreshold;
-	}
+	};
 	
 	function SansWord()
 	{

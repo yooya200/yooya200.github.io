@@ -1,34 +1,46 @@
-function loadJavascript(url, callback, charset) {
+function loadJavascript(url, callback, par, charset)
+{
     var head= document.getElementsByTagName('head')[0];
     var script= document.createElement('script');
     script.type= 'text/javascript';
-    if (charset != null) {
+	
+    if (charset != null)
+	{
         script.charset = "utf-8";
     }
+	
     var loaded = false;
-    script.onreadystatechange= function () {
-        if (this.readyState == 'loaded' || this.readyState == 'complete') {
-            if (loaded) {
+	
+    script.onreadystatechange= function ()
+	{
+        if (this.readyState == 'loaded' || this.readyState == 'complete')
+		{
+            if (loaded)
+			{
                 return;
             }
+			
             loaded = true;
 			
 			if (callback != null)
 			{
-				callback(script);
+				callback(par, script);
 			}
 			
         }
 		
     }
-    script.onload = function () {
+	
+    script.onload = function ()
+	{
 		
 		if (callback != null)
 		{
-			callback(script);
+			callback(par, script);
 		}
 		
     }
+	
     script.src = url;
     head.appendChild(script);
 }
