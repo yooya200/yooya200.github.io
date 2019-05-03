@@ -744,17 +744,16 @@
 	{
 		var queue = window.speechQueue;
 		
-		if (isBusy())
+		if (isBusy() == true)
 		{
-			setTimeout(parseQueue,100);
+			setTimeout(parseQueue, 100);
 			return;
 		}
 		
 		var obj = queue.shift();
 		
-		if(typeof obj === 'undefined')
+		if (typeof obj === 'undefined')
 		{
-			setTimeout(parseQueue,100);
 			return;
 		}
 		
@@ -779,7 +778,7 @@
 			console.warn("ERROR - Type " + obj.type + " is not supported.");
 		}
 		
-		setTimeout(parseQueue,100);
+		setTimeout(parseQueue, 100);
 	}
 	
 	function parseVoicewares(voicewaresJson)

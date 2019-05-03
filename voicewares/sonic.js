@@ -60,7 +60,7 @@ function VoicewareSonic()
 		var queue = this.sayQueue;
 		var voice = queue.shift();
 		
-		if(typeof voice === 'undefined')
+		if (typeof voice === 'undefined')
 		{
 			return;
 		}

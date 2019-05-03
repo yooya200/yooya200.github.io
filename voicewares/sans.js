@@ -46,7 +46,7 @@ function VoicewareSans()
 		var queue = this.sayQueue;
 		var word = queue.shift();
 		
-		if(typeof word === 'undefined')
+		if (typeof word === 'undefined')
 		{
 			return;
 		}
