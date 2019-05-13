@@ -48,7 +48,7 @@
 		{ "keyword": "딸랑딸랑", "url": "https://sv.bagoum.com/voice/k/vo_101021010_1.mp3" },
 		{ "keyword": "감사합니다", "url": "감사합니다.mp3" },
 		{ "keyword": "다시는안하겠소", "url": "다시는안하겟소.mp3" },
-		{ "keyword": "안녕하살법!", "url": "안녕하살법!.mp3" },
+		{ "keyword": "~안녕하살법!", "url": "안녕하살법!.mp3" },
 		{ "keyword": "안녕하살법받아치기!", "url": "안녕하살법받아치기!.mp3" },
 		{ "keyword": "할거야안할거야", "url": "할거야안할거야.mp3" },
 		{ "keyword": "또죽었네", "url": "또죽었네.mp3" },    
