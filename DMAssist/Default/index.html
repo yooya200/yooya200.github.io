@@ -203,7 +203,7 @@
 	}
 	
 	var client = new ChatClient();
-	client.socket.url = "ws://124.58.147.98:6974/TwitchChat";
+	client.socket.url = "ws://127.0.0.1:6974/TwitchChat";
 	client.socket.timeout = 1000;
 	client.onError = onWebSocketWrapperError;
 	client.onOpen = onWebSocketWrapperOpen;
