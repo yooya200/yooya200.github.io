@@ -203,6 +203,19 @@
 		return mainDiv;
 	}
 	
+	function setTimeoutScrollToBottom()
+	{
+		setTimeout(setTimeoutScrollToBottom, 100);
+		
+		var body = document.body;
+		
+		if (body != null)
+		{
+			body.scrollTop = body.scrollHeight;
+		}
+			
+	}
+	
 	var client = new ChatClient();
 	client.themeName = "기본";
 	client.socket.url = "ws://127.0.0.1:6974/TwitchChat";
@@ -212,7 +225,10 @@
 	client.onMessage = onClientMessage;
 	client.onConfigNotify = onClientConfigNotify;
 	client.socket.start();
-
+	
+	
+	setTimeoutScrollToBottom();
+	
 	</script>
 </head>
 <body>
