@@ -5,6 +5,7 @@ function ChatClient()
 	this.onMessage = function(obj, json) { };
 	this.onConfigNotify = function(obj) { };
 	
+	this.themeName = null;
 	this.config = null;
 	
 	this.socket = new WebSocketWrapper();
@@ -14,12 +15,8 @@ function ChatClient()
 	{
 		var cc = this.Tag;
 		
-		cc.readConfig(function()
-		{
-			var name = cc.config.Name;
-			cc.send('{"Type": "config_req","Name": "' + name + '"}');
-		});
-	
+		cc.send('{"Type": "config_req","Name": "' + cc.themeName + '"}');
+
 		cc.onOpen(obj.Tag);
 	};
 	
@@ -36,7 +33,8 @@ function ChatClient()
 		
 		if (type == "config_ntf")
 		{
-			cc.readConfig(function() { cc.onConfigNotify(cc); });
+			cc.config = json.Config;
+			cc.onConfigNotify(cc);
 		}
 		else if (type == "chat")
 		{
@@ -49,31 +47,6 @@ function ChatClient()
 		}
 		
 	};
-	
-	this.readConfig = function(complete)
-	{
-		var urihost = new URL(window.location.href);
-		var configUri = "./dmaconfig.json";
-		
-		var obj = this;
-		var configResponse = $.getJSON(configUri);
-
-		configResponse.complete(function ()
-		{
-			if (configResponse.status == 200)
-			{
-				obj.config = configResponse.responseJSON;
-				
-				if (complete != null)
-				{
-					complete();
-				}
-				
-			}
-
-		});
-
-	}
 	
 	this.send = function(json)
 	{

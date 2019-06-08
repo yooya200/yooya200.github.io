@@ -203,6 +203,7 @@
 	}
 	
 	var client = new ChatClient();
+	client.themeName = "기본";
 	client.socket.url = "ws://127.0.0.1:6974/TwitchChat";
 	client.socket.timeout = 1000;
 	client.onError = onWebSocketWrapperError;
