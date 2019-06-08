@@ -1,0 +1,219 @@
+<html>
+
+<head>
+    <title>DMAssist</title>
+    <meta charset="utf-8">
+    <link rel="shortcut icon" href="./favicon.ico">
+	
+    <script src="jquery.min.js"></script>
+    <script src="WebSocketWrapper.js"></script>
+    <script src="ChatClient.js"></script>
+	<script>
+	
+	var lines = [];
+	
+	function onWebSocketWrapperError(obj)
+	{
+	
+	}
+	
+	function onWebSocketWrapperOpen(obj)
+	{
+	
+	}
+	
+	function trimOutOfBrowser()
+	{
+		while (lines.length > 0)
+		{
+			var node = lines[lines.length - 1];
+			
+			if ((node.offsetTop + node.clientHeight) > window.innerHeight * 2)
+			{
+				var removed = lines.shift();
+				document.body.removeChild(removed);
+			}
+			else
+			{
+				break;
+			}
+			
+		}
+		
+	}
+	
+	function onClientMessage(obj, message)
+	{
+		var node = createNode(message);
+		applyStyle(node);
+		
+		lines.push(node);
+		document.body.appendChild(node);
+		document.body.scrollTop = document.body.scrollHeight;
+		
+		trimOutOfBrowser();
+		
+		document.body.scrollTop = document.body.scrollHeight;
+	}
+	
+	function onClientConfigNotify(obj)
+	{
+		for (var i = 0; i < lines.length; i++)
+		{
+			applyStyle(lines[i]);
+		}
+		
+	}
+	
+	function applyStyle(node)
+	{
+		var config = client.config;
+		var message = node.message;
+		var badges = message.Badges;
+		var displayName = message.DisplayName;
+		var components = message.Components;
+		var color = message.Color;
+		
+		var style = config.Style;
+		
+		document.body.style = style.Body;
+		
+		node.style = style.Background;
+		node.querySelector('.User').style = style.User;
+		node.querySelector('.DisplayName').style = style.DisplayName + 'color: ' + color;
+		node.querySelector('.BadgeContainer').style = style.BadgeContainer;
+		
+		var badgeNodes = node.querySelectorAll('.Badge');
+		var badgeSize = config.BadgeSize;
+		applyStyleNodes(badgeNodes, style.Badge, function(i, n)
+		{
+			n.src = badges[i] + badgeSize;
+		});
+		
+		node.querySelector('.ComponentContainer').style = style.ComponentContainer;
+		
+		var componentChatNodes = node.querySelectorAll('.ComponentChat');
+		applyStyleNodes(componentChatNodes, style.ComponentChat);
+		
+		var componentTwitchEmoteNodes = node.querySelectorAll('.ComponentTwitchEmote');
+		var twitchEmoteSize = config.EmoteSize;
+		applyStyleNodes(componentTwitchEmoteNodes, style.ComponentTwitchEmote, function(i, n)
+		{
+			n.src = n.component.URL + twitchEmoteSize;
+		});
+		
+		var componentDCConNodes = node.querySelectorAll('.ComponentDCCon');
+		applyStyleNodes(componentDCConNodes, style.ComponentDCCon, function(i, n)
+		{
+			n.src = n.component.URL;
+		});
+	}
+	
+	function applyStyleNodes(nodes, style, func)
+	{
+		for (var i = 0; i < nodes.length; i++)
+		{
+			var node = nodes[i];
+			node.style = style;
+			
+			if (func != null)
+			{
+				func(i, node);
+			}
+				
+		}
+		
+	}
+	
+	function createNode(message)
+	{
+		var config = client.config;
+		var badges = message.Badges;
+		var displayName = message.DisplayName;
+		var components = message.Components;
+		
+		var mainDiv = document.createElement('div');
+		mainDiv.className = 'Background';
+		mainDiv.message = message;
+		
+		var userDiv = document.createElement('div');
+		userDiv.className = 'User';
+		mainDiv.appendChild(userDiv);
+		
+		{
+			var displayNameNode = document.createElement('label');
+			displayNameNode.className = 'DisplayName';
+			displayNameNode.innerText = displayName;
+			userDiv.appendChild(displayNameNode);
+		}
+		
+		var badgeContainerDiv = document.createElement('span');
+		badgeContainerDiv.className = 'BadgeContainer';
+		userDiv.appendChild(badgeContainerDiv);
+		
+		for (var i = 0; i < badges.length; i++)
+		{
+			var badgeNode = document.createElement('img');
+			badgeNode.className = 'Badge';
+			badgeContainerDiv.appendChild(badgeNode);
+		}
+		
+		var componentsDiv = document.createElement('div');
+		componentsDiv.className = 'ComponentContainer';
+		mainDiv.appendChild(componentsDiv);
+		
+		for (var i = 0; i < components.length; i++)
+		{
+			var component = components[i];
+			var componentNode = null;
+			var text = component.Text;
+			var url = component.URL;
+			
+			if (text != null)
+			{
+				componentNode = document.createElement('label');
+				componentNode.className = 'ComponentChat';
+				componentNode.innerText = text;
+			}
+			else if (url != null)
+			{
+				var type = component.Type;
+				componentNode = document.createElement('img');
+				
+				if (type == 'TwitchEmote')
+				{
+					componentNode.className = 'ComponentTwitchEmote';
+				}
+				else if (type == 'DCCon')
+				{
+					componentNode.className = 'ComponentDCCon';
+				}
+				
+			}
+			
+			if (componentNode != null)
+			{
+				componentNode.component = component;
+				componentsDiv.appendChild(componentNode);
+			}
+				
+		}
+		
+		return mainDiv;
+	}
+	
+	var client = new ChatClient();
+	client.socket.url = "ws://124.58.147.98:6974/TwitchChat";
+	client.socket.timeout = 1000;
+	client.onError = onWebSocketWrapperError;
+	client.onOpen = onWebSocketWrapperOpen;
+	client.onMessage = onClientMessage;
+	client.onConfigNotify = onClientConfigNotify;
+	client.socket.start();
+
+	</script>
+</head>
+<body>
+
+</body>
+</html>
