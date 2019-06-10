@@ -34,7 +34,6 @@ function WebSocketWrapper()
 			
 			if (state != WebSocket.CONNECTING && state != WebSocket.OPEN)
 			{
-				obj.retryCount ++;
 				obj.onWebSocketError0(obj);
 				
 				obj.close(obj);
@@ -77,6 +76,7 @@ function WebSocketWrapper()
 	
 	this.onWebSocketError0 = function(obj)
 	{
+		obj.retryCount ++;
 		obj.close(obj);
 		
 		obj.onError(obj);

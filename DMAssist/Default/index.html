@@ -11,15 +11,26 @@
 	<script>
 	
 	var lines = [];
+	var prevConnectingMessage = null;
 	
 	function onWebSocketWrapperError(obj)
 	{
-	
+		if (prevConnectingMessage != null)
+		{
+			removeMessageNode(prevConnectingMessage);
+		}
+		
+		prevConnectingMessage = addSystemMessageNode('서버 연결중입니다. ' + obj.socket.retryCount);
 	}
 	
 	function onWebSocketWrapperOpen(obj)
 	{
+		addSystemMessageNode('연결되었습니다');
+	}
 	
+	function removeMessageNode(node)
+	{
+		document.body.removeChild(node);
 	}
 	
 	function trimOutOfBrowser()
@@ -31,7 +42,7 @@
 			if ((node.offsetTop + node.clientHeight) > window.innerHeight * 2)
 			{
 				var removed = lines.shift();
-				document.body.removeChild(removed);
+				removeMessageNode(removed);
 			}
 			else
 			{
@@ -42,7 +53,18 @@
 		
 	}
 	
-	function onClientMessage(obj, message)
+	function addSystemMessageNode(text)
+	{
+		var message = {};
+		message.Badges = [];
+		message.DisplayName = 'System';
+		message.Components = [{Text: text}];
+		message.Color = '#FFFFFF';
+		
+		return addMessageNode(message);
+	}
+	
+	function addMessageNode(message)
 	{
 		var node = createNode(message);
 		applyStyle(node);
@@ -54,6 +76,13 @@
 		trimOutOfBrowser();
 		
 		document.body.scrollTop = document.body.scrollHeight;
+		
+		return node;
+	}
+	
+	function onClientMessage(obj, message)
+	{
+		addMessageNode(message);
 	}
 	
 	function onClientConfigNotify(obj)
@@ -74,6 +103,11 @@
 		var displayName = message.DisplayName;
 		var components = message.Components;
 		var color = message.Color;
+		
+		if (config == null)
+		{
+			return;
+		}
 		
 		var style = config.Style;
 		
