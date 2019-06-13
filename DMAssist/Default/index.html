@@ -115,7 +115,7 @@
 		
 		node.style = style.Background;
 		node.querySelector('.User').style = style.User;
-		node.querySelector('.DisplayName').style = style.DisplayName + 'color: ' + color;
+		node.querySelector('.DisplayName').style = style.DisplayName + ';color: ' + color;
 		node.querySelector('.BadgeContainer').style = style.BadgeContainer;
 		
 		var badgeNodes = node.querySelectorAll('.Badge');
@@ -128,7 +128,14 @@
 		node.querySelector('.ComponentContainer').style = style.ComponentContainer;
 		
 		var componentChatNodes = node.querySelectorAll('.ComponentChat');
-		applyStyleNodes(componentChatNodes, style.ComponentChat);
+		applyStyleNodes(componentChatNodes, style.ComponentChat, function(i, n)
+		{
+			if (message.ColorChat == true)
+			{
+				n.style += ';color: ' + color;
+			}
+				
+		});
 		
 		var componentTwitchEmoteNodes = node.querySelectorAll('.ComponentTwitchEmote');
 		var twitchEmoteSize = config.EmoteSize;
