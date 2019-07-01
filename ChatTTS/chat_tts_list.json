@@ -1,4 +1,7 @@
 {
+	"tts": {
+		"timeout": 5000
+	},
 	"voicewares": [
 		{
 			"prefix": "샌즈:", 
@@ -49,7 +52,7 @@
 		{ "keyword": "감사합니다", "url": "감사합니다.mp3" },
 		{ "keyword": "다시는안하겠소", "url": "다시는안하겟소.mp3" },
 		{ "keyword": "~안녕하살법!", "url": "안녕하살법!.mp3" },
-	        { "keyword": "안녕하살법!", "url": "안녕하살법!.mp3" },
+		{ "keyword": "안녕하살법!", "url": "안녕하살법!.mp3" },
 		{ "keyword": "안녕하살법받아치기!", "url": "안녕하살법받아치기!.mp3" },
 		{ "keyword": "할거야안할거야", "url": "할거야안할거야.mp3" },
 		{ "keyword": "또죽었네", "url": "또죽었네.mp3" },    
@@ -61,11 +64,11 @@
 		{ "keyword": "누구인가?", "url": "누구인가.mp3" },
 		{ "keyword": "지금누가~", "url": "지금누가~.mp3" },
 		{ "keyword": "~소리를내었어", "url": "소리를내었어.mp3" },
-	        { "keyword": "오케이땡큐", "url": "오케이 땡큐.mp3" },
-	        { "keyword": "오케이사딸라!", "url": "오케이 사딸라!.mp3" },
-	        { "keyword": "4달러스", "url": "4달러스.mp3" },
-	        { "keyword": "너두나두", "url": "너두나두.mp3" },
-	        { "keyword": "야나두", "url": "야나두.mp3" },
+		{ "keyword": "오케이땡큐", "url": "오케이 땡큐.mp3" },
+		{ "keyword": "오케이사딸라!", "url": "오케이 사딸라!.mp3" },
+		{ "keyword": "4달러스", "url": "4달러스.mp3" },
+		{ "keyword": "너두나두", "url": "너두나두.mp3" },
+		{ "keyword": "야나두", "url": "야나두.mp3" },
 		{ "keyword": "푸딩푸딩", "url": "https://redive.estertion.win/sound/unit_battle_voice/100701/vo_btl_100701_cutin_001.m4a" },
 		{ "keyword": "호메떼호메떼", "url": "호메떼호메떼.wav" },
 		{ "keyword": "마무리!", "url": "마무리.wav" },

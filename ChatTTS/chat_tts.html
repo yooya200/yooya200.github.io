@@ -184,6 +184,9 @@
                 {
                     var responseJSON = listresponse.responseJSON;
 
+                    var ttsJson = responseJSON["tts"];
+                    parseTTS(ttsJson);
+
                     var soundsJson = responseJSON["sounds"];
                     parseSounds(soundsJson);
 
@@ -215,10 +218,15 @@
             window.ttsHandler.onSetupError = function ()
             {
                 $('#last_read')[0].innerHTML = "TTS 초기화 실패 : 사용 가능한 TTS 보이스가 없습니다.";
+				console.log("TTS 초기화 실패 : 사용 가능한 TTS 보이스가 없습니다.");
+				
+				window.ttsHandler.clear();
             };
 
             $('#last_read')[0].innerHTML = "TTS 초기화 중";
             ttsHandler.setup(" ", 1.3, 1, true, "SYSTEM");
+
+            parseQueue();
 
             window.setupPhase = 2;
         }
@@ -275,11 +283,10 @@
                     window.location.href = url.origin + url.pathname + "?channel=" + value;
                 }
 
-            },
-                function ()
-                {
-                    alertify.error('채널명이 비어있으므로 동작할 수 없습니다.');
-                }).set({ 'closableByDimmer': false });
+            }, function ()
+			{
+			
+			});
 
         };
 
@@ -506,13 +513,11 @@
         function enqueueVoiceware(tuple)
         {
             window.speechQueue.push(tuple);
-            parseQueue();
         }
 
         function enqueueSpecialChatClip(clip)
         {
             window.speechQueue.push(clip);
-            parseQueue();
         }
 
         function findStringLanguage(string)
@@ -582,7 +587,6 @@
 
             if (string === "")
             {
-                parseQueue();
                 return;
             }
 
@@ -599,7 +603,6 @@
             obj.msg = msg;
             window.speechQueue.push(obj);
 
-            parseQueue();
         }
 
         function isBusy()
@@ -736,11 +739,11 @@
 
         function parseQueue()
         {
+			setTimeout(parseQueue, 100);
             var queue = window.speechQueue;
 
             if (isBusy() == true)
             {
-                setTimeout(parseQueue, 100);
                 return;
             }
 
@@ -750,6 +753,10 @@
             {
                 return;
             }
+			else if (obj === '')
+			{
+
+			}
 
             if (obj.type === "default")
             {
@@ -772,7 +779,6 @@
                 console.warn("ERROR - Type " + obj.type + " is not supported.");
             }
 
-            setTimeout(parseQueue, 100);
         }
 
         function parseVoicewares(voicewaresJson)
@@ -802,6 +808,12 @@
             window.voicewares = voicewares;
         }
 
+        function parseTTS(ttsJson)
+        {
+            var ttsHandler = window.ttsHandler;
+			ttsHandler.timeout = ttsJson.timeout;
+		}
+		
         function parseSounds(soundsJson)
         {
             var clips = [];
