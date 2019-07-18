@@ -79,6 +79,9 @@
 		{ "keyword": "제압되었습니다", "url": "제압되었습니다.wav" },
 		{ "keyword": "처형되었습니다", "url": "처형되었습니다.wav" },
 		{ "keyword": "패배!", "url": "패배.wav" },
-		{ "keyword": "퍼스트블러드", "url": "퍼스트블러드.wav" }
+		{ "keyword": "퍼스트블러드", "url": "퍼스트블러드.wav" },
+	        { "keyword": "내일또보고", "url": "내일또보고.mp3" },
+	        { "keyword": "태보해", "url": "태보해.mp3" },
+	        { "keyword": "안녕하세요~", "url": "안녕하세요.mp3" },
     ]
 }
