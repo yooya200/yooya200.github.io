@@ -10,6 +10,10 @@
     <script src="ChatClient.js"></script>
 	<script>
 	
+	var system = 'System';
+	var stay_hydrated_bot = 'Stay_Hydrated_Bot';
+	var bots = [stay_hydrated_bot, 'Nightbot', '싹둑', '빵_떡'];
+	
 	var lines = [];
 	var prevConnectingMessage = null;
 	
@@ -57,7 +61,7 @@
 	{
 		var message = {};
 		message.Badges = [];
-		message.DisplayName = 'System';
+		message.DisplayName = system;
 		message.Components = [{Text: text}];
 		message.Color = '#FFFFFF';
 		
@@ -109,20 +113,32 @@
 			return;
 		}
 		
+		var colorOverride = '';
+		var badgeColorBarStyleName = getBadgeColorBarStyleName(displayName, badges);
+		
 		var style = config.Style;
+	
+		if (displayName == stay_hydrated_bot)
+		{
+			colorOverride = ';color: ' + color;
+		}
 		
 		document.body.style = style.Body;
 		
-		node.style = style.Background;
+		node.querySelector('.Background').style = style.Background;
+		node.querySelector('.BadgeColorBar').style = style.BadgeColorBar + style['BadgeColorBar.' + badgeColorBarStyleName];
+		node.querySelector('.ChatColorBar').style = style.ChatColorBar + ';background-color: ' + color;
+		node.querySelector('.Content').style = style.Content;
+		
 		node.querySelector('.User').style = style.User;
-		node.querySelector('.DisplayName').style = style.DisplayName + ';color: ' + color;
+		node.querySelector('.DisplayName').style = style.DisplayName + colorOverride;
 		node.querySelector('.BadgeContainer').style = style.BadgeContainer;
 		
 		var badgeNodes = node.querySelectorAll('.Badge');
 		var badgeSize = config.BadgeSize;
 		applyStyleNodes(badgeNodes, style.Badge, function(i, n)
 		{
-			n.src = badges[i] + badgeSize;
+			n.src = badges[i].Path + badgeSize;
 		});
 		
 		node.querySelector('.ComponentContainer').style = style.ComponentContainer;
@@ -132,7 +148,7 @@
 		{
 			if (message.ColorChat == true)
 			{
-				n.style += ';color: ' + color;
+				n.style = style.ComponentChat + colorOverride;
 			}
 				
 		});
@@ -175,12 +191,33 @@
 		var components = message.Components;
 		
 		var mainDiv = document.createElement('div');
-		mainDiv.className = 'Background';
 		mainDiv.message = message;
+		
+		var tableDiv = document.createElement('table');
+		tableDiv.className = 'Background';
+		mainDiv.appendChild(tableDiv);
+		
+		var lineDiv = document.createElement('tr');
+		tableDiv.appendChild(lineDiv);
+		
+		var badgeColorBar = document.createElement('td');
+		badgeColorBar.className = 'BadgeColorBar';
+		lineDiv.appendChild(badgeColorBar);
+		
+		var chatColorBar = document.createElement('td');
+		chatColorBar.className = 'ChatColorBar';
+		lineDiv.appendChild(chatColorBar);
+		
+		var contentWrapper = document.createElement('td');
+		lineDiv.appendChild(contentWrapper);
+		
+		var contentDiv = document.createElement('div');
+		contentDiv.className = 'Content';
+		contentWrapper.appendChild(contentDiv);
 		
 		var userDiv = document.createElement('div');
 		userDiv.className = 'User';
-		mainDiv.appendChild(userDiv);
+		contentDiv.appendChild(userDiv);
 		
 		{
 			var displayNameNode = document.createElement('label');
@@ -202,7 +239,7 @@
 		
 		var componentsDiv = document.createElement('div');
 		componentsDiv.className = 'ComponentContainer';
-		mainDiv.appendChild(componentsDiv);
+		contentDiv.appendChild(componentsDiv);
 		
 		for (var i = 0; i < components.length; i++)
 		{
@@ -242,6 +279,51 @@
 		}
 		
 		return mainDiv;
+	}
+	
+	function getBadgeColorBarStyleName(displayName, badges)
+	{
+		if (displayName == system)
+		{
+			return 'system';
+		}
+		
+		var botIndex = bots.indexOf(displayName);
+		
+		if (botIndex != -1)
+		{
+			if (displayName == stay_hydrated_bot)
+			{
+				return 'stay_hydrated_bot';
+			}
+			else
+			{
+				return 'bots';
+			}
+			
+		}
+		
+		for (var i = 0; i < badges.length; i++)
+		{
+			var badge = badges[i];
+			var name = badge.Name;
+			
+			if (name == 'broadcaster')
+			{
+				return 'broadcaster';
+			}
+			else if (name == 'moderator') 
+			{
+				return 'moderator';
+			}
+			else if (name == 'vip') 
+			{
+				return 'vip';
+			}
+			
+		}
+		
+		return null;
 	}
 	
 	function setTimeoutScrollToBottom()
