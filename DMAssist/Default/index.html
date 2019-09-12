@@ -126,7 +126,7 @@
 		document.body.style = style.Body;
 		
 		node.querySelector('.Background').style = style.Background;
-		node.querySelector('.BadgeColorBar').style = style.BadgeColorBar + style['BadgeColorBar.' + badgeColorBarStyleName];
+		node.querySelector('.BadgeColorBar').style = style.BadgeColorBar + ('' + style['BadgeColorBar.' + badgeColorBarStyleName]).replace('{=chatColor}', color);
 		node.querySelector('.ChatColorBar').style = style.ChatColorBar + ';background-color: ' + color;
 		node.querySelector('.Content').style = style.Content;
 		
@@ -283,11 +283,6 @@
 	
 	function getBadgeColorBarStyleName(displayName, badges)
 	{
-		if (displayName == system)
-		{
-			return 'system';
-		}
-		
 		var botIndex = bots.indexOf(displayName);
 		
 		if (botIndex != -1)
@@ -323,7 +318,7 @@
 			
 		}
 		
-		return null;
+		return 'default';
 	}
 	
 	function setTimeoutScrollToBottom()
