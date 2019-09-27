@@ -20,7 +20,7 @@ window.host.asset_root = function () {
 }
 
 window.host.template_root = function () {
-    return '/template';
+    return 'https://toon.at/template';
 }
 
 window.host.proxy = function () {
