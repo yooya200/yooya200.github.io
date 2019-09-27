@@ -1,0 +1,313 @@
+<!doctype html>
+<html style="background-color:transparent">
+<head>
+	<meta charset="UTF-8">
+	<meta name="description" content="">
+	<meta name="referrer" content="no-referrer">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<title>후원 화면 - Toonation</title>    
+    
+<script type="text/javascript">
+
+function parseQuery(queryString)
+{
+    var query = {};
+    var pairs = (queryString[0] === '?' ? queryString.substr(1) : queryString).split('&');
+	
+    for (var i = 0; i < pairs.length; i++)
+	{
+        var pair = pairs[i].split('=');
+        query[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1] || '');
+    }
+	
+    return query;
+}
+
+function isNullOrWhitespace(str)
+{
+	return str == null || str == '' || str.trim() == '';
+}
+
+function locateToError(message)
+{
+	window.location = "error.html?message=" + encodeURIComponent(message) + "&from=" + encodeURIComponent(window.location);
+}
+
+var query = parseQuery(window.location.search);
+
+window.aspx_filter_code = function () { return 0; };
+window.aspx_remote_conf = function () { return {"donation":1,"video_volume":25,"video_check":1,"twitch_subs":1,"twitch_follow":1,"twitch_host":1,"twitch_cheer":1,"youtube_subs":1,"youtube_schat":1,"youtube_sponsor":1,"alert_pause":0,"video_hide":0,"tts_volume":75,"roulette_volume":75,"recorder_volume":75}; };
+
+var uid = query.uid;
+
+if (isNullOrWhitespace(uid))
+{
+	locateToError("uid missing");
+}
+
+window.aspx_uid = function () { { return uid;} };
+
+var payload = query.payload;
+
+if (isNullOrWhitespace(payload))
+{
+	locateToError("uid missing");
+}
+
+window.aspx_payload = function () { return payload; };
+
+</script>
+
+    <!-- trackJs begin -->
+<script src="https://cdn.trackjs.com/agent/v3/latest/t.js"></script>
+<script>
+window.TrackJS && TrackJS.install({
+	token: "64345c1d68384438856638a5145b0984",
+	application: "toonation"
+});
+</script>
+<!-- trackJs end -->
+
+	
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800|Shadows+Into+Light" rel="stylesheet" type="text/css">
+<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/earlyaccess/nanumgothic.css">
+<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/earlyaccess/nanumgothiccoding.css">
+<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/earlyaccess/nanummyeongjo.css">
+<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/earlyaccess/nanumbrushscript.css">
+<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/earlyaccess/nanumpenscript.css">
+<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/earlyaccess/jejugothic.css">
+<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/earlyaccess/jejumyeongjo.css">
+<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/earlyaccess/kopubbatang.css">
+<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/earlyaccess/notosanskr.css">
+<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/earlyaccess/hanna.css">
+<link rel="stylesheet" type="text/css" href="https://esfviinjshml2105872.cdn.ntruss.com/assets/fonts/SpoqaHanSans-kr.css">
+<link rel="stylesheet" type="text/css" href="https://esfviinjshml2105872.cdn.ntruss.com/assets/fonts/SpoqaHanSans-jp.css">
+<link rel="stylesheet" type="text/css" href="https://esfviinjshml2105872.cdn.ntruss.com/assets/fonts/nanumsquare.css">
+<link rel="stylesheet" type="text/css" href="https://esfviinjshml2105872.cdn.ntruss.com/assets/fonts/NanumGothicEco.css">
+<link rel="stylesheet" type="text/css" href="https://esfviinjshml2105872.cdn.ntruss.com/assets/fonts/NanumMyeongjoEco.css">
+<link rel="stylesheet" type="text/css" href="https://esfviinjshml2105872.cdn.ntruss.com/assets/fonts/NanumBarunpen.css">
+<link rel="stylesheet" type="text/css" href="https://esfviinjshml2105872.cdn.ntruss.com/assets/fonts/JejuHallasan.css">
+<link rel="stylesheet" type="text/css" href="https://esfviinjshml2105872.cdn.ntruss.com/assets/fonts/KirangHaerang.css">
+<link rel="stylesheet" type="text/css" href="https://esfviinjshml2105872.cdn.ntruss.com/assets/fonts/HannaAir.css">
+<link rel="stylesheet" type="text/css" href="https://esfviinjshml2105872.cdn.ntruss.com/assets/fonts/Hanna11yrsold.css">
+<link rel="stylesheet" type="text/css" href="https://esfviinjshml2105872.cdn.ntruss.com/assets/fonts/Jua.css">
+<link rel="stylesheet" type="text/css" href="https://esfviinjshml2105872.cdn.ntruss.com/assets/fonts/DoHyeon.css">
+<link rel="stylesheet" type="text/css" href="https://esfviinjshml2105872.cdn.ntruss.com/assets/fonts/YeonSung.css">
+<link rel="stylesheet" type="text/css" href="https://esfviinjshml2105872.cdn.ntruss.com/assets/fonts/Seoul.css">
+<link rel="stylesheet" type="text/css" href="https://esfviinjshml2105872.cdn.ntruss.com/assets/fonts/Godo.css">
+
+
+<script type="text/javascript" src="jquery-3.4.1.min.js"></script>
+<script type="text/javascript" src="assets/common.js"></script>
+<script type="text/javascript" src="assets/localization/ko/streamer.js?v=10"></script>
+<script type="text/javascript" src="assets/localization/ko/patch.streamer.js?v=1"></script>
+<script type="text/javascript" src="assets/localization.js?v=11"></script>
+
+<script type="text/javascript">document.title = window.locale.get("menu_widget_alert") + " - Toonation";</script>
+
+<link rel="stylesheet" type="text/css" href="assets/layout.css?v=5">
+<link rel="stylesheet" type="text/css" href="assets/style.css">
+<link rel="stylesheet" type="text/css" href="assets/streamer/streamer.css?v=14">
+<link rel="stylesheet" type="text/css" href="assets/widgets.css?v=7">
+<link rel="stylesheet" type="text/css" href="assets/streamer/content_alertbox.css">
+<link rel="stylesheet" type="text/css" href="assets/animate.css">
+
+<script type="text/javascript" src="assets/consts.js?v=6"></script>
+<script type="text/javascript" src="assets/host.js?v=8"></script>
+<script type="text/javascript" src="assets/lib.js?v=4"></script>
+<script type="text/javascript" src="assets/analytics.js"></script>
+<script type="text/javascript" src="assets/concurrent.js?v=1"></script>
+<script type="text/javascript" src="assets/localization/ko/conf_postprocess.js?v=14"></script>
+<script type="text/javascript" src="assets/streamer/conf_postprocess.js?v=14"></script>
+<script type="text/javascript" src="assets/streamer/content.js?v=5"></script>
+
+</head>
+<body class="overflow-hidden">
+    <div id="div_disconnect" class="disconnect_outer hidden-force">
+        <div class="disconnect_inner">
+			<div class="spin-indicator"></div>
+            <div class="disconnect_text">
+				<div class="localized" data-locale-tag="server_no_response"></div><br>
+				<div class="localized" data-locale-tag="reconnect_widget"></div>
+            </div>
+        </div>
+    </div>
+
+	<iframe src="https://www.bing.com/translator" style="display: none"></iframe>
+	<div id="div_debug" class="padding-8 absolute-full hidden" style="z-index:9999;background-color:rgba(0,0,0,0.77);color:#fff">
+		debug panel<br>
+	</div>
+
+	<xmp class="hidden template-profile">
+        <img class="image-profile" src="{url}" style="vertical-align: middle; width:{imgsize}px; height:{imgsize}px">
+    </xmp>
+	<xmp class="hidden template-name">
+		{profile}
+		<span class="animated infinite {anim} inline-block" style="color:{title_color}">{title_name}</span>
+		<span class="animated infinite {anim} inline-block" style="color:{highlight_color}">{name}</span>
+	</xmp>
+	<xmp class="hidden template-month">
+		<span class="animated infinite {anim} inline-block" style="color:{highlight_color}">{month}</span>
+	</xmp>
+	<xmp class="hidden template-amount">
+		<span class="animated infinite {anim} inline-block" style="color:{highlight_color}">{amount}</span>
+	</xmp>
+	<xmp class="hidden template-vote">
+		<span class="animated infinite {anim} inline-block" style="color:{highlight_color}">{vote}</span>
+	</xmp>
+	<xmp class="hidden template-roulette">
+		<span class="animated infinite {anim} inline-block" style="color:{highlight_color}">{roulette}</span>
+	</xmp>
+	<xmp class="hidden template-generic">
+		<div style="color:{color}; font-family:{font}; font-size:{fontsize}px; line-height:140%; display:inline-block; height:{imgsize}px;">{content}</div>
+	</xmp>
+	<xmp class="hidden template-donation">
+		<div style="color:{color}; font-family:{font}; font-size:{fontsize}px; line-height:140%; display:inline-block; height:{imgsize}px;">{content}</div>
+	</xmp>
+    <xmp class="hidden template-donation-video">
+        <div style="color:{color}; font-family:{font}; font-size:{fontsize}px; line-height:140%; display:inline-block; height:{imgsize}px;">{content}</div>
+    </xmp>
+	<xmp class="hidden template-donation-content">
+		<div class="inline-block" style="color:{color2}; font-family:{font2}; font-size:{fontsize2}px; line-height:150%">{content}</div>
+	</xmp>
+	<template data-template-id="template-profile">
+		<img class="image-profile" src="{url}" style="vertical-align: middle; width:{imgsize}px; height:{imgsize}px">
+	</template>
+	<template data-template-id="template-name">
+		{profile}
+		<span class="animated infinite {anim} inline-block" style="color:{title_color}">{title_name}</span>
+		<span class="animated infinite {anim} inline-block" style="color:{highlight_color}">{name}</span>
+	</template>
+	<template data-template-id="template-month">
+		<span class="animated infinite {anim} inline-block" style="color:{highlight_color}">{month}</span>
+	</template>
+	<template data-template-id="template-amount">
+		<span class="animated infinite {anim} inline-block" style="color:{highlight_color}">{amount}</span>
+	</template>
+	<template data-template-id="template-vote">
+		<span class="animated infinite {anim} inline-block" style="color:{highlight_color}">{vote}</span>
+	</template>
+	<template data-template-id="template-roulette">
+		<span class="animated infinite {anim} inline-block" style="color:{highlight_color}">{roulette}</span>
+	</template>
+	<template data-template-id="template-generic">
+		<div style="color:{color}; font-family:{font}; font-size:{fontsize}px; line-height:140%; display:inline-block; height:{imgsize}px;">{content}</div>
+	</template>
+	<template data-template-id="template-donation">
+		<div style="color:{color}; font-family:{font}; font-size:{fontsize}px; line-height:140%; display:inline-block; height:{imgsize}px;">{content}</div>
+	</template>
+	<template data-template-id="template-donation-video">
+		<div style="color:{color}; font-family:{font}; font-size:{fontsize}px; line-height:140%; display:inline-block; height:{imgsize}px;">{content}</div>
+	</template>
+	<template data-template-id="template-donation-content">
+		<div class="inline-block" style="color:{color2}; font-family:{font2}; font-size:{fontsize2}px; line-height:150%">{content}</div>
+	</template>
+
+	<div class="overflow-hidden">
+		<div id="div_layout_video" class="alert-layout animated hidden">
+			<div class="flex-vertical margin-auto min-height-100 max-height-100" style="justify-content:center;-webkit-justify-content:center">
+				<div class="layout-child text-center min-height-0 relative flex margin-bottom-20 flex-0-1-auto">
+					<div class="flex-1 flex layout0_wrappers" id="js_player_parent" style="margin:0px auto">
+						<div class="video-indicator-wrapper">
+							<div class="video-indicator"></div>
+						</div>
+						<video id="js_player"></video>
+					</div>
+				</div>
+				<div class="layout-child flex-0-0-auto flex">
+					<div class="margin-auto text-center text-outline">
+						<div class="js_text0 -text-no-wrap" style="position: relative;"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="div_layout_roulette_normal" class="alert-layout flex animated fadeIn">
+			<div class="flex-vertical margin-auto max-height-100">
+				<div class="layout-child text-center text-outline min-height-0 flex relative flex-0-1-auto">
+					<div class="relative flex-1" style="margin:6px auto">
+						<div class="js_text0 -text-no-wrap absolute-full" style="line-height: 100%;z-index:2"></div>
+
+						<img class="js_img opacity-0" src="#">
+						<div class="js_bg absolute-full margin-auto bg-contain"></div>
+					</div>
+				</div>
+				<div class="layout-child flex-0-0-auto" style="margin-top:-30.62%">
+					<div class="margin-auto text-center">
+						<canvas id="roulette_normal" class="roulette-canvas" width="1003" height="194" data-stage="0"></canvas>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="div_layout_roulette_taebo" class="alert-layout flex animated fadeIn">
+			<div class="flex-vertical margin-auto max-height-100">
+				<div class="layout-child text-center text-outline min-height-0 flex relative flex-0-1-auto">
+					<div class="relative flex-1" style="margin:6px auto;margin-top: -0%;">
+						<div class="js_text0 -text-no-wrap absolute-full" style="line-height: 100%;z-index:2;margin-top: 30%;"></div>
+
+						<img class="js_img opacity-0" src="#">
+						<div class="js_bg absolute-full margin-auto bg-contain"></div>
+					</div>
+				</div>
+				<div class="layout-child flex-0-0-auto" style="margin-top:-20.62%">
+					<div class="margin-auto text-center">
+						<canvas id="roulette_taebo" class="roulette-canvas" width="1003" height="194" data-stage="0" style="width: 70%;"></canvas>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="div_layout_1" class="alert-layout animated hidden flex">
+			<div class="flex-vertical margin-auto max-height-100">
+				<div class="layout-child text-center min-height-0 flex relative flex-0-1-auto">
+					<div class="relative" style="margin:6px auto">
+						<img class="js_img opacity-0" src="#">
+						<div class="js_bg absolute-full margin-auto bg-contain"></div>
+					</div>
+				</div>
+				<div class="layout-child flex-0-0-auto">
+					<div class="margin-auto text-center text-outline">
+						<div class="js_text0 -text-no-wrap" style="line-height: 100%"></div>
+						<div class="js_text1 padding-20 text-break-all" style="line-height: 120%"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="div_layout_2" class="alert-layout animated flex hidden">
+			<div class="absolute-full flex" style="z-index:2">
+				<div class="margin-auto text-center text-outline">
+					<div class="js_text0 text-center -text-no-wrap" style="line-height: 100%"></div>
+					<div class="js_text1 padding-20 text-break-all" style="line-height: 120%"></div>
+				</div>
+			</div>
+			<div class="absolute-full js_bg layout-child margin-auto bg-cover"></div>
+		</div>
+		<div id="div_layout_3" class="alert-layout animated hidden">
+			<div class="width-35 height-100 float-left flex">
+				<img class="js_img margin-auto" src="#">
+			</div>
+			<div class="width-65 height-100 float-left flex">
+				<div class="margin-auto text-center text-outline">
+					<div class="js_text0 -text-no-wrap" style="line-height: 100%"></div>
+					<div class="js_text1 padding-20 text-break-all" style="line-height: 120%"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="text_calculator" class="opacity-0 absolute -text-no-wrap" style="pointer-events:none"></div>
+
+	<script type="text/javascript" src="assets/streamer/content_alertbox.js"></script>
+	<script type="text/javascript">
+		!function(){
+			var color = window.location.href;
+			if( color.indexOf("&color=")>=0 ){
+				color = color.substr(color.indexOf("&color=")+7);
+				if(color.indexOf("&")>=0) color = color.substr(0, color.indexOf("&"));
+
+				 document.body.style.backgroundColor = color;
+			}
+		}();
+
+        run();
+	</script>
+</body>
+</html>

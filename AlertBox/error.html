@@ -1,0 +1,36 @@
+<!doctype html>
+<html style="background-color:transparent">
+<head>
+	<meta charset="UTF-8">
+	<meta name="description" content="">
+	<meta name="referrer" content="no-referrer">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<title>Error</title>    
+    
+<script type="text/javascript">
+
+function parseQuery(queryString)
+{
+    var query = {};
+    var pairs = (queryString[0] === '?' ? queryString.substr(1) : queryString).split('&');
+	
+    for (var i = 0; i < pairs.length; i++)
+	{
+        var pair = pairs[i].split('=');
+        query[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1] || '');
+    }
+	
+    return query;
+}
+
+var query = parseQuery(window.location.search);
+document.writeln("<br>Message : " + query.message);
+document.writeln("<br>Redirect From : " + query.from);
+
+</script>
+
+</head>
+<body>
+</body>
+</html>
