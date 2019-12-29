@@ -34,18 +34,68 @@
 	
 	function removeMessageNode(node)
 	{
-		document.body.removeChild(node);
+		var index = lines.indexOf(node);
+		
+		if (index > -1)
+		{
+			lines.splice(index, 1);
+			document.body.removeChild(node);
+		}
+			
+	}
+	
+	function findMessageNodeByUser(user)
+	{
+		for (var i = 0; i < lines.length; i++)
+		{
+			var node = lines[i];
+			
+			if (node.message.UserName == user)
+			{
+				return node;
+			}
+			
+		}
+		
+		return null;
+	}
+	
+	function findMessageNodeById(messageId)
+	{
+		for (var i = 0; i < lines.length; i++)
+		{
+			var node = lines[i];
+			
+			if (node.message.Id == messageId)
+			{
+				return node;
+			}
+			
+		}
+		
+		return null;
+	}
+	
+	function clearMessageNodes()
+	{
+		while (lines.length > 0)
+		{
+			var removed = lines[0];
+			removeMessageNode(removed);
+		}
+		
 	}
 	
 	function trimOutOfBrowser()
 	{
 		while (lines.length > 0)
 		{
-			var node = lines[lines.length - 1];
+			var lastIndex = lines.length - 1;
+			var node = lines[lastIndex];
 			
 			if ((node.offsetTop + node.clientHeight) > window.innerHeight * 2)
 			{
-				var removed = lines.shift();
+				var removed = lines[0];
 				removeMessageNode(removed);
 			}
 			else
@@ -84,9 +134,48 @@
 		return node;
 	}
 	
-	function onClientMessage(obj, message)
+	function onClientCommand(obj, message)
 	{
-		addMessageNode(message);
+		var commandType = message.CommandType;
+		
+		if (commandType == "PrivateMessage")
+		{
+			addMessageNode(message.Command);
+		}
+		else if (commandType == "ClearMessage")
+		{
+			var node = findMessageNodeById(message.Command.TargetMessageid);
+			removeMessageNode(node);
+		}
+		else if (commandType == "ClearChat")
+		{
+			var user = message.Command.User;
+			
+			if (user != null)
+			{
+				while (true)
+				{
+					var node = findMessageNodeByUser(user);
+					
+					if (node != null)
+					{
+						removeMessageNode(node);
+					}
+					else
+					{
+						break;
+					}
+					
+				}
+				
+			}
+			else
+			{
+				clearMessageNodes();
+			}
+		
+		}
+			
 	}
 	
 	function onClientConfigNotify(obj)
@@ -340,7 +429,7 @@
 	client.socket.timeout = 1000;
 	client.onError = onWebSocketWrapperError;
 	client.onOpen = onWebSocketWrapperOpen;
-	client.onMessage = onClientMessage;
+	client.onCommand = onClientCommand;
 	client.onConfigNotify = onClientConfigNotify;
 	client.socket.start();
 	
