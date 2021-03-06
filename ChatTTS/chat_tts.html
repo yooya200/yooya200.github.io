@@ -82,10 +82,13 @@
             alertify.set('notifier', 'position', 'top-center');
 
             // oauth token으로 처음 페이지 접속시 트위치 로그인으로 생성함(로컬스토리지 저장, 로그아웃시 초기화됨)
-            var oauth = localStorage.getItem("oauth") || "";
-            window.oauth = oauth;
-
-            // 읽을 채팅 최대 길이(!!tts maxlength (길이)로 변경가능)
+             window.oauth = localStorage.getItem("oauth") !== null ? localStorage.getItem("oauth") : "";
+		window.login = localStorage.getItem("login") !== null && localStorage.getItem("login") !== "undefined" ? localStorage.getItem("login") : "";
+        	window.display_name = localStorage.getItem("display_name") !== null && localStorage.getItem("display_name") !== "undefined" ? localStorage.getItem("display_name") : "";
+        	window.last_login_date = localStorage.getItem("last_login_date") !== null && localStorage.getItem("last_login_date") !== "undefined" ? parseInt(localStorage.getItem("last_login_date")) : -1;
+            
+	
+	// 읽을 채팅 최대 길이(!!tts maxlength (길이)로 변경가능)
             window.maxlength = localStorage.getItem("tts_maxlength") !== null ? parseInt(localStorage.getItem("tts_maxlength")) : 80;
 
             // 기본적으로 밴할 리스트
