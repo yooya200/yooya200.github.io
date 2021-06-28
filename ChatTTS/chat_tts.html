@@ -701,12 +701,12 @@
 
         function parseQueue()
         {
-			setTimeout(parseQueue, 100);
             var queue = window.speechQueue;
 
             if (isBusy() == true)
             {
 				console.log("busy");
+				setTimeout(parseQueue, 100);
                 return;
             }
 
@@ -714,6 +714,7 @@
 
             if (typeof obj === 'undefined')
             {
+				setTimeout(parseQueue, 100);
                 return;
             }
 			else if (obj === '')
