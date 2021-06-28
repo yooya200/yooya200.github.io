@@ -705,7 +705,7 @@
 
             if (isBusy() == true)
             {
-				console.log("busy");
+				console.log("busy : " + queue.length);
 				setTimeout(parseQueue, 100);
                 return;
             }
