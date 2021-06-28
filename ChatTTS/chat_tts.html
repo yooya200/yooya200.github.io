@@ -433,10 +433,10 @@
 
         function enqueueText(string, speed, pitch, nickname)
         {
-			if (speechQueue.length > 0 || isBusy() == true)
-			{
-				return;
-			}
+			//if (speechQueue.length > 0 || isBusy() == true)
+			//{
+			//	return;
+			//}
 			
             $('#last_read')[0].innerHTML = "<b>" + nickname + "</b>:" + string;
 
