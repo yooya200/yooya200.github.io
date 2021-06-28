@@ -717,10 +717,6 @@
 				setTimeout(parseQueue, 100);
                 return;
             }
-			else if (obj === '')
-			{
-
-			}
 
             if (obj.type === "default")
             {
@@ -743,6 +739,7 @@
                 console.warn("ERROR - Type " + obj.type + " is not supported.");
             }
 
+			setTimeout(parseQueue, 100);
         }
 
         function parseVoicewares(voicewaresJson)
