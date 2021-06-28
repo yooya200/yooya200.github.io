@@ -1,0 +1,22 @@
+[
+	{
+		"prefix": "샌즈:", 
+		"skipThreshold": 0.5, 
+		"audio": "voicewares/sans.mp3", 
+		"script": "voicewares/sans.js", 
+		"constructor": "VoicewareSans"
+	},
+	{
+		"prefix": "소닉:", 
+		"syllableAudio": [
+			"voicewares/소닉_왈1.mp3", 
+			"voicewares/소닉_왈2.mp3"
+		], 
+		"wordAudio": [
+			"voicewares/소닉_아르르르1.mp3", 
+			"voicewares/소닉_아르르르2.mp3"
+		], 
+		"script": "voicewares/sonic.js", 
+		"constructor": "VoicewareSonic"
+	}
+]

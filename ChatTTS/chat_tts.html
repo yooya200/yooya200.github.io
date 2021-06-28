@@ -14,21 +14,19 @@
     <script src="jsDynamicLoader.js"></script>
     <script src="ttsHandler.js"></script>
     <script src="specialchat.js"></script>
-    <script src="tapic.min.js"></script>
     <script src="tapicHandler.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/AlertifyJS/1.11.0/css/alertify.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/AlertifyJS/1.11.0/css/themes/bootstrap.min.css" />
 </head>
 <body style='margin: 10px;'>
     <div id="chat" style="overflow: hidden; word-wrap: break-word; width: 800px;">
-        <button type="button" class="btn btn-danger" id="btn-cancel" onclick="onClearQueueClick()">로봇 시작</button>
-        <button type="button" class="btn btn-warning" onclick="localStorage.setItem('oauth','');location.reload();" id="btn-logout">로그아웃</button>
+        <button type="button" class="btn btn-danger" id="btn-cancel" onclick="startRobot()">로봇 시작</button>
         <button type="button" class="btn btn-success" onclick="window.change_channel();" id="btn-channel">채널 변경</button><br />
         <div id="last_read">(없음)</div>
     </div>
 
     <br>
-    <div>테스트<input onkeypress="onTestTextBoxkeydown(event)" id="testTextBox" type="text" style="margin-left: 5px"></div>
+    <div id='test' style='visibility: hidden;' >테스트<input onkeypress="onTestTextBoxkeydown(event)" id="testTextBox" type="text" style="margin-left: 5px"></div>
 
     <hr style='border-width: 2px;'>
     <h3>스페셜 보이스</h3>
@@ -39,46 +37,43 @@
     <div id="clipsTable" class='volumecontainer' />
 
     <script>
-
-        window.setupPhase = 0;
-
-        function onClearQueueClick()
-        {
-            if (window.setupPhase == 1)
-            {
-                window.setupPhase = 2;
-                setupTTS();
-
-                $("#btn-cancel")[0].disabled = true;
-                $("#btn-cancel")[0].innerHTML = "로봇 시작 중";
-            }
-            else if (window.setupPhase == 1)
-            {
-
-            }
-            else if (window.setupPhase == 2)
-            {
-                this.clear();
-
-                enqueueText('큐를 비웠습니다', 1.3, 1, 'SYSTEM');
-            }
-
-        }
+	
+		function startRobot()
+		{
+			if (!getChannelName())
+			{
+				window.change_channel();
+			}
+			else
+			{
+				$("#btn-cancel")[0].disabled = true;
+				$("#btn-cancel")[0].innerHTML = "로봇 시작 중";
+				
+				setupTTS();
+			}
+			
+		}
+		
+		function getChannelName()
+		{
+			return getParams("channel") || "";
+		}
 
         function setup()
         {
-            // 트위치 개발자 사이트에서 앱 등록으로 client id를 발급받으실수 있습니다.
-            window.oauth_client_id = "qp7etii0xqtqy5qs037zpb6ze5nvyu";
-
             var urihost = new URL(window.location.href);
-            window.oauth_redirect_uri = urihost.origin + urihost.pathname;
-		
-		
-		// 인증후 돌아올 페이지(현재 페이지 주소)를 입력합니다.
-        window.oauth_redirect_uri = "https://yooya200.github.io/ChatTTS/chat_tts.html";
-		
-            // 스페셜챗 json 주소
-            window.sounds_list_uri = urihost.origin + getParent(urihost.pathname) + "/chat_tts_list.json";
+			
+            // 트위치 개발자 사이트에서 앱 등록으로 client id를 발급받으실수 있습니다.
+            // window.oauth_client_id = "qp7etii0xqtqy5qs037zpb6ze5nvyu";
+            window.oauth_client_id = "v3dxpa6mbjxmg0klu0ytdlaydeflax";
+			window.configUri = urihost.origin + getParent(urihost.pathname) + "/configs";
+
+            // tts config json uri
+            window.config_uri_tts = configUri + "/tts.json";
+            // 스페셜 보이스 json uri
+            window.config_uri_special_voice = configUri + "/voicewares.json";
+            // 스페셜 챗 json uri
+            window.config_uri_special_chat = configUri + "/specialchats.json";
 
             alertify.defaults.transition = "slide";
             alertify.defaults.theme.ok = "btn btn-primary";
@@ -86,47 +81,7 @@
             alertify.defaults.theme.input = "form-control";
             alertify.set('notifier', 'position', 'top-center');
 
-            // oauth token으로 처음 페이지 접속시 트위치 로그인으로 생성함(로컬스토리지 저장, 로그아웃시 초기화됨)
-             window.oauth = localStorage.getItem("oauth") !== null ? localStorage.getItem("oauth") : "";
-		window.login = localStorage.getItem("login") !== null && localStorage.getItem("login") !== "undefined" ? localStorage.getItem("login") : "";
-        	window.display_name = localStorage.getItem("display_name") !== null && localStorage.getItem("display_name") !== "undefined" ? localStorage.getItem("display_name") : "";
-        	window.last_login_date = localStorage.getItem("last_login_date") !== null && localStorage.getItem("last_login_date") !== "undefined" ? parseInt(localStorage.getItem("last_login_date")) : -1;
-            
-		        const url_string = window.location.href;
-        const url = new URL(url_string);
-
-        if ('speechSynthesis' in window) {
-            console.debug("TTS check done");
-        } else {
-            location.href = "./no_tts.html";
-        }
-
-        // 주소뒤 ?channel=(채널아이디) 로 지정
-        window.channelname = getParams("channel");
-        
-        // 채널명 없으면 비워둠
-        if (window.channelname === null) window.channelname = "";
-        
-        // 클릭 여부 저장
-        window.isclicked = false;
-        
-        // 자동스크롤 중단 여부
-        window.stopScroll = localStorage.getItem("autoscroll") === "false";
-        if(!window.stopScroll) {
-            document.getElementById("chk-autoscroll").checked = true;
-            scrollBottom();
-        }
-
-        // oauth token으로 처음 페이지 접속시 트위치 로그인으로 생성함(로컬스토리지 저장, 로그아웃시 초기화됨)
-        window.oauth = localStorage.getItem("oauth") !== null ? localStorage.getItem("oauth") : "";
-        window.login = localStorage.getItem("login") !== null && localStorage.getItem("login") !== "undefined" ? localStorage.getItem("login") : "";
-        window.display_name = localStorage.getItem("display_name") !== null && localStorage.getItem("display_name") !== "undefined" ? localStorage.getItem("display_name") : "";
-        window.last_login_date = localStorage.getItem("last_login_date") !== null && localStorage.getItem("last_login_date") !== "undefined" ? parseInt(localStorage.getItem("last_login_date")) : -1;
-
-        // 주소뒤 ?debug=true 로 디버그모드 활성화
-        window.debugmode = getParams("debug") === "true";
-
-       // 읽을 채팅 최대 길이(!!tts maxlength (길이)로 변경가능)
+            // 읽을 채팅 최대 길이(!!tts maxlength (길이)로 변경가능)
             window.maxlength = localStorage.getItem("tts_maxlength") !== null ? parseInt(localStorage.getItem("tts_maxlength")) : 80;
 
             // 기본적으로 밴할 리스트
@@ -137,128 +92,85 @@
 
             window.mod_speed = 1;
             window.nonmod_speed = 1.2;
+			
+            window.speechQueue = [];
 
-            if (oauth != "")
-            {
-                window.setupPhase = 1;
-            }
-            else
-            {
-                // there's no oauth key
-                if (document.location.hash != "" && document.location.hash.indexOf("access_token") !== -1)
-                {
-                    tryLogin();
-                }
-                else
-                {
-                    //not authed yet
-                    var state = md5(Date.now());
-                    localStorage.setItem("state", state);
-                    localStorage.setItem("last_url", location.href);
+			setupSpecialChats();
+			setupSpecialVoices();
 
-                    document.body.innerHTML = '';
-                     document.write("트위치로 로그인해야 사용하실수 있습니다.<br />2021년 2월 13일 이전에 로그인하셨다면 로그인 방식 및 필요 권한 변경으로 다시 로그인하셔야 합니다.<br /><br /> <a href=\"https://id.twitch.tv/oauth2/authorize?response_type=token&client_id=" +
-                        window.oauth_client_id +
-                        "&redirect_uri=" +
-                        window.oauth_redirect_uri +
-                        "&scope=bits:read%20channel:read:hype_train%20channel:read:redemptions%20channel:read:subscriptions%20chat:read%20chat:edit&state=" +
-                        state +
-                        "\">트위치 아이디로 로그인</a>");
-                }
-
-            }
-
+            parseQueue();
         }
+		
+		function getJSON(uri, callback)
+		{
+			var response = $.getJSON(uri);
 
-        function tryLogin()
-        {
-            //user already authed
-            var rawauth = document.location.href.replace("#", "?");
-            var authobj = new URL(rawauth);
-            var oauth = getParams("access_token", rawauth);
-            var state = getParams("state", rawauth);
-            var localstate = localStorage.getItem("state");
-            var last_url = localStorage.getItem("last_url");
-            var last_url_obj = new URL(last_url);
-
-            document.body.innerHTML = '';
-
-            if (last_url_obj.origin !== authobj.origin)
+            response.complete(() => 
             {
-                document.write("SECURITY ERROR");
-            }
-            else
-            {
-                if (localstate === null || localstate === "" || state !== localstate)
+                if (response.status == 200)
                 {
-                    document.write("잘못된 state값이 전달되었습니다. 페이지를 새로고침 해보세요.<br />Invalid state. please refresh and retry.")
-                }
-                else
-                {
-                    localStorage.setItem("oauth", oauth);
-                    localStorage.setItem("state", "");
-                    localStorage.setItem("last_url", "");
-                    location.href = last_url;
-                }
+                    var json = response.responseJSON;
+					if (callback) callback(json);
+				}
+				
+			});
+		}
+		
+		function setupSpecialChats()
+		{
+			window.specialchatplayer = new SpecialChatPlayer();
+			getMasterVolume($('#masterVolume')[0]);
 
-            }
+			getJSON(window.config_uri_special_chat, json => 
+			{
+				parseSounds(json);
+			});
 
-        }
+		}
+		
+		function setupSpecialVoices()
+		{
+			window.voicewares = [];
+
+			getJSON(window.config_uri_special_voice, json => 
+			{
+				parseVoicewares(json);
+			});
+
+		}
 
         function setupTTS()
         {
-            var oauth = window.oauth;
-
-            window.speechQueue = [];
-
             window.ttsHandler = new TTSHandler();
-
+			
             if (window.ttsHandler.init == false)
             {
                 $('#last_read')[0].innerHTML = "사용 가능한 TTS 보이스가 없습니다.";
                 return;
             }
 
-            window.specialchatplayer = new SpecialChatPlayer();
-
-            getMasterVolume($('#masterVolume')[0]);
-
-            var listresponse = $.getJSON(window.sounds_list_uri);
-
-            listresponse.complete(function ()
-            {
-                if (listresponse.status == 200)
-                {
-                    var responseJSON = listresponse.responseJSON;
-
-                    var ttsJson = responseJSON["tts"];
-                    parseTTS(ttsJson);
-
-                    var soundsJson = responseJSON["sounds"];
-                    parseSounds(soundsJson);
-
-                    var voicewaresJson = responseJSON["voicewares"];
-                    parseVoicewares(voicewaresJson);
-                }
-
-            });
-
             window.ttsHandler.onSetupComplete = function ()
             {
+				$('#test')[0].style.visibility = "visible";
                 $('#last_read')[0].innerHTML = "TTS 초기화 완료, 트위치 채널 연결 중";
 
                 window.tapicHandler = new TapicHandler();
                 window.tapicHandler.onJoin = function (joinChannelName)
                 {
-                    $("#btn-cancel")[0].disabled = false;
-                    $("#btn-cancel")[0].innerHTML = "큐 비우기";
-                    $("#btn-logout")[0].disabled = false;
                     enqueueText(joinChannelName + " 채널에 연결되었습니다.", 1.3, 1, "SYSTEM");
                 };
                 window.tapicHandler.onMessage = onTapicMessage;
 
-                var channelName = getParams("channel") || "";
-                window.tapicHandler.setup(oauth, channelName);
+				window.tapicHandler.onOpen = e =>
+				{
+					window.tapicHandler.join(getChannelName());
+				};
+                window.tapicHandler.setup(window.oauth_client_id);
+
+				getJSON(window.config_uri_tts, json => 
+				{
+					window.ttsHandler.timeout = json.timeout;
+				});
 
             };
 
@@ -272,10 +184,6 @@
 
             $('#last_read')[0].innerHTML = "TTS 초기화 중";
             ttsHandler.setup(" ", 1.3, 1, true, "SYSTEM");
-
-            parseQueue();
-
-            window.setupPhase = 2;
         }
 
         function onTestTextBoxkeydown(e)
@@ -362,7 +270,7 @@
 
             if (typeof emotes != 'undefined')
             {
-                var emote_list = emotes.split("/");
+                var emote_list = emotes.split(",");
 
                 emote_list.forEach(function (emote_replace)
                 {
@@ -525,6 +433,11 @@
 
         function enqueueText(string, speed, pitch, nickname)
         {
+			if (speechQueue.length > 0 || isBusy() == true)
+			{
+				return;
+			}
+			
             $('#last_read')[0].innerHTML = "<b>" + nickname + "</b>:" + string;
 
             var voicewareTuple = parseVoiceware(string);
@@ -654,11 +567,11 @@
 
         function isBusy()
         {
-            if (window.ttsHandler.isBusy())
+            if (window.ttsHandler && window.ttsHandler.isBusy())
             {
                 return true;
             }
-            else if (window.specialchatplayer.isBusy())
+            else if (window.specialchatplayer && window.specialchatplayer.isBusy())
             {
                 return true;
             }
@@ -686,7 +599,7 @@
 
         function onTapicMessage(e)
         {
-            var index = window.banlist.indexOf(e.from);
+            var index = window.banlist.indexOf(e.displayName);
             var message = e.text;
             var keyword_test = new RegExp("(" + window.bankeyword.join("|") + ")", "g");
             var voicename = window.def_voice;
@@ -701,10 +614,10 @@
             // 금지단어 포함 메세지 전체 읽지 않음
             // if (keyword_test.test(message)) return;
 
-            for (var i = 0; i < e.from.length; i++)
+            for (var i = 0; i < e.displayName.length; i++)
             {
-                personality_int1 += e.from.charCodeAt(i);
-                personality_int2 |= e.from.charCodeAt(i);
+                personality_int1 += e.displayName.charCodeAt(i);
+                personality_int2 |= e.displayName.charCodeAt(i);
             }
 
             personality_int1 %= ((personality_range1[1] * 10 - personality_range1[0] * 10) + 1);
@@ -757,10 +670,12 @@
 
             if (message != "")
             {
+				let user = e.displayName + "(" +  e.from + ")";
+				
                 // 모더레이터/스트리머는 설정 무관 최대 120글자 읽기 가능
                 if (((e.mod && index < 0) || e.streamer || e.badges.indexOf("broadcaster/1") != -1) && message.length < 120)
                 {
-                    enqueueText(message, personality_speed, personality_pitch, e.from);
+                    enqueueText(message, personality_speed, personality_pitch, user);
                 }
                 else
                 {
@@ -769,11 +684,11 @@
                     {
                         if (window.tts_subonly)
                         {
-                            if (e.sub) enqueueText(message, personality_speed, personality_pitch, e.from);
+                            if (e.sub) enqueueText(message, personality_speed, personality_pitch, user);
                         }
                         else
                         {
-                            enqueueText(message, personality_speed, personality_pitch, e.from);
+                            enqueueText(message, personality_speed, personality_pitch, user);
                         }
 
                     }
@@ -855,12 +770,6 @@
             window.voicewares = voicewares;
         }
 
-        function parseTTS(ttsJson)
-        {
-            var ttsHandler = window.ttsHandler;
-			ttsHandler.timeout = ttsJson.timeout;
-		}
-		
         function parseSounds(soundsJson)
         {
             var clips = [];
