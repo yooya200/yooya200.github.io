@@ -18,25 +18,7 @@ function TTSHandler()
 
 	this.isBusy = function()
 	{
-		if (this.speechSynthesis.speaking == false)
-		{
-			return false;
-		}
-		else if (this.isEnded == false)
-		{
-			var timestamp = new Date().getTime();
-			
-			if (timestamp - this.startTimestamp >= this.timeout)
-			{
-				console.log(this.startTimestamp + " " + (timestamp - this.startTimestamp) + " VS " + this.timeout);
-				this.clear();
-			}
-
-			return true;
-		
-		}
-		
-		return false;
+		return this.speechSynthesis.speaking;
 	};
 	
 	this.play = function(msg)
