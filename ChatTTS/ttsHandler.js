@@ -3,7 +3,6 @@ function TTSHandler()
 	this.init = false;
 	this.speechSynthesis = window.speechSynthesis;
 	this.timeout = 5000;
-	this.isEnded = true;
 	this.startTimestamp = 0;
 	
 	if (this.speechSynthesis != null)
@@ -23,14 +22,6 @@ function TTSHandler()
 	
 	this.play = function(msg)
 	{
-		var own = this;
-		
-		msg.onend = function(event)
-		{
-			own.isEnded = true;
-		};
-		
-		this.isEnded = false;
 		this.startTimestamp = new Date().getTime();
 		this.speechSynthesis.speak(msg);
 	}
