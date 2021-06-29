@@ -97,8 +97,8 @@
 
 			setupSpecialChats();
 			setupSpecialVoices();
-
-            parseQueue();
+			
+			window.setInterval(parseQueue, 100);
         }
 		
 		function getJSON(uri, callback)
@@ -702,11 +702,10 @@
         function parseQueue()
         {
             var queue = window.speechQueue;
-
+			
             if (isBusy() == true)
             {
 				console.log("busy : " + queue.length);
-				setTimeout(parseQueue, 100);
                 return;
             }
 
@@ -714,7 +713,7 @@
 
             if (typeof obj === 'undefined')
             {
-				setTimeout(parseQueue, 100);
+				console.log("idle");
                 return;
             }
 
@@ -738,8 +737,7 @@
             {
                 console.warn("ERROR - Type " + obj.type + " is not supported.");
             }
-
-			setTimeout(parseQueue, 100);
+			
         }
 
         function parseVoicewares(voicewaresJson)
