@@ -38,36 +38,35 @@
     <div id="clipsTable" class='volumecontainer' />
 
     <script>
-	
-		function startRobot()
-		{
-			if (!getChannelName())
-			{
-				window.change_channel();
-			}
-			else
-			{
-				$("#btn-cancel")[0].disabled = true;
-				$("#btn-cancel")[0].innerHTML = "로봇 시작 중";
-				
-				setupTTS();
-			}
-			
-		}
-		
-		function getChannelName()
-		{
-			return getParams("channel") || "";
-		}
+    
+        function startRobot()
+        {
+            if (!getChannelName())
+            {
+                window.change_channel();
+            }
+            else
+            {
+                $("#btn-cancel")[0].disabled = true;
+                $("#btn-cancel")[0].innerHTML = "로봇 시작 중";
+                
+                setupTTS();
+            }
+            
+        }
+        
+        function getChannelName()
+        {
+            return getParams("channel") || "";
+        }
 
         function setup()
         {
             var urihost = new URL(window.location.href);
-			
+            
             // 트위치 개발자 사이트에서 앱 등록으로 client id를 발급받으실수 있습니다.
-            // window.oauth_client_id = "qp7etii0xqtqy5qs037zpb6ze5nvyu";
             window.oauth_client_id = "v3dxpa6mbjxmg0klu0ytdlaydeflax";
-			window.configUri = urihost.origin + getParent(urihost.pathname) + "/configs";
+            window.configUri = urihost.origin + getParent(urihost.pathname) + "/configs";
 
             // tts config json uri
             window.config_uri_tts = configUri + "/tts.json";
@@ -93,57 +92,57 @@
 
             window.mod_speed = 1;
             window.nonmod_speed = 1.2;
-			
+            
             window.speechQueue = [];
 
-			setupSpecialChats();
-			setupSpecialVoices();
-			
-			window.setTimeout(parseQueue, 100);
+            setupSpecialChats();
+            setupSpecialVoices();
+            
+            window.setTimeout(parseQueue, 100);
         }
-		
-		function getJSON(uri, callback)
-		{
-			var response = $.getJSON(uri);
+        
+        function getJSON(uri, callback)
+        {
+            var response = $.getJSON(uri);
 
             response.complete(() => 
             {
                 if (response.status == 200)
                 {
                     var json = response.responseJSON;
-					if (callback) callback(json);
-				}
-				
-			});
-		}
-		
-		function setupSpecialChats()
-		{
-			window.specialchatplayer = new SpecialChatPlayer();
-			getMasterVolume($('#masterVolume')[0]);
+                    if (callback) callback(json);
+                }
+                
+            });
+        }
+        
+        function setupSpecialChats()
+        {
+            window.specialchatplayer = new SpecialChatPlayer();
+            getMasterVolume($('#masterVolume')[0]);
 
-			getJSON(window.config_uri_special_chat, json => 
-			{
-				parseSounds(json);
-			});
+            getJSON(window.config_uri_special_chat, json => 
+            {
+                parseSounds(json);
+            });
 
-		}
-		
-		function setupSpecialVoices()
-		{
-			window.voicewares = [];
+        }
+        
+        function setupSpecialVoices()
+        {
+            window.voicewares = [];
 
-			getJSON(window.config_uri_special_voice, json => 
-			{
-				parseVoicewares(json);
-			});
+            getJSON(window.config_uri_special_voice, json => 
+            {
+                parseVoicewares(json);
+            });
 
-		}
+        }
 
         function setupTTS()
         {
             window.ttsHandler = new TTSHandler();
-			
+            
             if (window.ttsHandler.init == false)
             {
                 $('#last_read')[0].innerHTML = "사용 가능한 TTS 보이스가 없습니다.";
@@ -152,7 +151,7 @@
 
             window.ttsHandler.onSetupComplete = function ()
             {
-				$('#test')[0].style.visibility = "visible";
+                $('#test')[0].style.visibility = "visible";
                 $('#last_read')[0].innerHTML = "TTS 초기화 완료, 트위치 채널 연결 중";
 
                 window.tapicHandler = new TapicHandler();
@@ -162,25 +161,25 @@
                 };
                 window.tapicHandler.onMessage = onTapicMessage;
 
-				window.tapicHandler.onOpen = e =>
-				{
-					window.tapicHandler.join(getChannelName());
-				};
+                window.tapicHandler.onOpen = e =>
+                {
+                    window.tapicHandler.join(getChannelName());
+                };
                 window.tapicHandler.setup(window.oauth_client_id);
 
-				getJSON(window.config_uri_tts, json => 
-				{
-					window.ttsHandler.timeout = json.timeout;
-				});
+                getJSON(window.config_uri_tts, json => 
+                {
+                    window.ttsHandler.timeout = json.timeout;
+                });
 
             };
 
             window.ttsHandler.onSetupError = function ()
             {
                 $('#last_read')[0].innerHTML = "TTS 초기화 실패 : 사용 가능한 TTS 보이스가 없습니다.";
-				console.log("TTS 초기화 실패 : 사용 가능한 TTS 보이스가 없습니다.");
-				
-				window.ttsHandler.clear();
+                console.log("TTS 초기화 실패 : 사용 가능한 TTS 보이스가 없습니다.");
+                
+                window.ttsHandler.clear();
             };
 
             $('#last_read')[0].innerHTML = "TTS 초기화 중";
@@ -240,9 +239,9 @@
                 }
 
             }, function ()
-			{
-			
-			});
+            {
+            
+            });
 
         };
 
@@ -434,11 +433,11 @@
 
         function enqueueText(string, speed, pitch, nickname)
         {
-			//if (speechQueue.length > 0 || isBusy() == true)
-			//{
-			//	return;
-			//}
-			
+            //if (speechQueue.length > 0 || isBusy() == true)
+            //{
+            //    return;
+            //}
+            
             $('#last_read')[0].innerHTML = "<b>" + nickname + "</b>:" + string;
 
             var voicewareTuple = parseVoiceware(string);
@@ -671,8 +670,8 @@
 
             if (message != "")
             {
-				let user = e.displayName + "(" +  e.from + ")";
-				
+                let user = e.displayName + "(" +  e.from + ")";
+                
                 // 모더레이터/스트리머는 설정 무관 최대 120글자 읽기 가능
                 if (((e.mod && index < 0) || e.streamer || e.badges.indexOf("broadcaster/1") != -1) && message.length < 120)
                 {
@@ -702,9 +701,9 @@
 
         function parseQueue()
         {
-			window.lastid = window.setTimeout(parseQueue, 100);
+            window.lastid = window.setTimeout(parseQueue, 100);
             var queue = window.speechQueue;
-			
+            
             if (isBusy() == true)
             {
                 return;
@@ -737,7 +736,7 @@
             {
                 console.warn("ERROR - Type " + obj.type + " is not supported.");
             }
-			
+            
         }
 
         function parseVoicewares(voicewaresJson)
